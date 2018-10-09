@@ -6,7 +6,7 @@ Simple orchestrator for building docker images
 
 Download latest release and make it executable:
 ```bash
-$ curl -L -o ./dobr https://github.com/OneGuardSolutions/docker-build-orchestrator/releases/download/0.1.0-beta1/dobr
+$ curl -L -o ./dobr https://github.com/OneGuardSolutions/docker-build-orchestrator/releases/download/v0.1.0-beta1/dobr
 $ chmod +x ./dobr
 ```
 
