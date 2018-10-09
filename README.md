@@ -2,6 +2,14 @@
 
 Simple orchestrator for building docker images
 
+## Installation
+
+Download latest release and make it executable:
+```bash
+$ curl -L -o ./dobr https://github.com/OneGuardSolutions/docker-build-orchestrator/releases/download/0.1.0-beta1/dobr
+$ chmod +x ./dobr
+```
+
 ## Repository structure
 
 Each `Dockerfile` resides in a directory structure in format `<repository>/<tag>/Dockerfile`.
