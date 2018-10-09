@@ -21,6 +21,21 @@ Following configuration options are available:
   example: `latest:2,edge:3`
 -->
 
+Example:
+```
+# php/repository.conf
+namespace=oneguard
+order=7.2-fpm,7.2-fpm-dev
+```
+<!-- Comming soon
+```
+# php/repository.conf
+namespace=oneguard
+order=7.2-fpm
+aliases=fpm:7.2-fpm,fpm-dev:7.2-fpm-dev,nginx:7.2-nginx
+```
+-->
+
 ## Future features
 
 - automatic alias creation
