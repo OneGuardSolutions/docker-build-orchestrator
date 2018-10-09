@@ -4,14 +4,16 @@ BASE_DIR="$PWD"
 
 function printHelp() {
 	cat << EOF
+Docker Build Orchestrator - dobr
+
 Usage:
-	$(basename "$0")
+	dobr
 		Build all tags for all repositories
-	$(basename "$0") <repository>
+	dobr <repository>
 		Build all tags for specified repository
-	$(basename "$0") <repository>:<tag>
+	dobr <repository>:<tag>
 		Build specified tag for the repository repository
-	$(basename "$0") --help
+	dobr --help
 		Print this help message
 
 EOF
