@@ -4,3 +4,4 @@ vendor/
 # Build
 dobr.phar
 dobr.phar.pubkey
+dobr.phar.version
