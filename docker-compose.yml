@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+
+  php:
+    build: .
+    volumes:
+      - './:/src/'
+    working_dir: /src/
+    command: box build
+    tty: true
