@@ -8,12 +8,10 @@
  * file that was distributed with this source code.
  */
 
+use App\Application;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Command\BuildCommand;
-use Symfony\Component\Console\Application;
-
-$application = new Application('dobr', '@package_version@');
-$application->add(new BuildCommand());
+$application = new Application('@package_version@');
 /** @noinspection PhpUnhandledExceptionInspection */
 $application->run();
