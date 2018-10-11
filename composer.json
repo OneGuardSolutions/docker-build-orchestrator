@@ -8,6 +8,9 @@
         "symfony/flex": "^1.1",
         "symfony/yaml": "*"
     },
+    "require-dev": {
+        "ext-json": "*"
+    },
     "config": {
         "preferred-install": {
             "*": "dist"

@@ -1,7 +1,9 @@
 vendor/
 .travis/
+!.travis/phar-private.pem.enc
 
 # Build
 dobr.phar
 dobr.phar.pubkey
 dobr.version
+gh-pages/
