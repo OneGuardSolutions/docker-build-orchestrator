@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 language: php
 
 cache:
@@ -16,6 +16,8 @@ matrix:
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_2b8c35c1fe04_key -iv $encrypted_2b8c35c1fe04_iv -in .travis/phar-private.pem.enc -out .travis/phar-private.pem -d
+  - sudo curl -L -o /usr/local/bin/box https://github.com/humbug/box/releases/download/3.1.1/box.phar
+  - sudo chmod 755 /usr/local/bin/box
 
 script: build/build.sh
 
