@@ -1,2 +1,8 @@
 [
+    {
+        "name": "dobr.phar",
+        "sha1": "dcedbd4e648b7ea6e8338d35a360527bd8b1107c",
+        "url": "https:\/\/oneguardsolutions.github.io\/docker-build-orchestrator\/releases\/v0.1.0-beta1-12-g6a7a575\/dobr.phar",
+        "version": "v0.1.0-beta1-12-g6a7a575"
+    }
 ]
