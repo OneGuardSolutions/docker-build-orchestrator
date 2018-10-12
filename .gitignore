@@ -1,6 +1,5 @@
 vendor/
-.travis/
-!.travis/phar-private.pem.enc
+.travis/phar-private.pem
 
 # Build
 dobr.phar
