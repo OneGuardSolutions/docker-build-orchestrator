@@ -26,5 +26,6 @@ deploy:
   keep-history: true
   local-dir: gh-pages
   on:
+    all_branches: true
     condition: $TRAVIS_BRANCH == "v2" || -n $TRAVIS_TAG
     php: '7.1'
