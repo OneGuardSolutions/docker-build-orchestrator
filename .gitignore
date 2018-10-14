@@ -1,7 +1,0 @@
-vendor/
-.travis/
-
-# Build
-dobr.phar
-dobr.phar.pubkey
-dobr.version
