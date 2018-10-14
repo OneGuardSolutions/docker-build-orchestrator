@@ -10,8 +10,6 @@ matrix:
   fast_finish: true
   include:
     - php: 7.1
-      env:
-        - EXECUTE_DEPLOYMENT=true
     - php: 7.2
 
 before_install:
@@ -28,4 +26,5 @@ deploy:
   keep-history: true
   local-dir: gh-pages
   on:
-    branch: v2
+    condition: $TRAVIS_BRANCH == "v2" || -n $TRAVIS_TAG
+    php: '7.1'
