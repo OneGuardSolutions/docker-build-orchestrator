@@ -10,20 +10,22 @@
  *
  */
 
-if (count($argv) !== 5 && count($argv) !== 6) {
-    echo "Usage: php add-to-manifest.php <name> <url> <sha1> <version> [<manifest_file>]\n";
+if (count($argv) !== 6 && count($argv) !== 7) {
+    echo "Usage: php add-to-manifest.php <name> <url> <publicKey> <sha1> <version> [<manifest_file>]\n";
     exit(1);
 }
 
 $name = $argv[1];
 $url = $argv[2];
-$sha1 = $argv[3];
-$version = $argv[4];
-$manifestFile = empty($argv[5]) ? 'manifest.json' : $argv[5];
+$publicKeyUrl = $argv[3];
+$sha1 = $argv[4];
+$version = $argv[5];
+$manifestFile = empty($argv[6]) ? 'manifest.json' : $argv[6];
 $entry = [
     'name' => $name,
     'sha1' => $sha1,
     'url' => $url,
+    'publicKey' => $publicKey,
     'version' => $version
 ];
 
