@@ -18,7 +18,9 @@ before_install:
   - sudo curl -L -o /usr/local/bin/box https://github.com/humbug/box/releases/download/3.1.1/box.phar
   - sudo chmod 755 /usr/local/bin/box
 
-script: build/build.sh
+script: vendor/bin/phpunit
+
+before_deploy: build/build.sh
 
 deploy:
   provider: pages
