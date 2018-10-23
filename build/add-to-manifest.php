@@ -17,7 +17,7 @@ if (count($argv) !== 6 && count($argv) !== 7) {
 
 $name = $argv[1];
 $url = $argv[2];
-$publicKeyUrl = $argv[3];
+$publicKey = $argv[3];
 $sha1 = $argv[4];
 $version = $argv[5];
 $manifestFile = empty($argv[6]) ? 'manifest.json' : $argv[6];
