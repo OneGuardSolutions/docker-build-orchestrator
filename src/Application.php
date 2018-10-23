@@ -11,12 +11,13 @@
 namespace App;
 
 use App\Command\BuildCommand;
+use App\Utils\VersionUtils;
 use Deployer\Component\PharUpdate\Console\Command;
 use Deployer\Component\PharUpdate\Console\Helper;
 
 class Application extends \Symfony\Component\Console\Application {
     public function __construct($version) {
-        parent::__construct('dobr', $version);
+        parent::__construct('dobr', (new VersionUtils())->normalize($version));
 
         $this->getHelperSet()->set(new Helper());
 

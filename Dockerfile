@@ -1,4 +1,4 @@
-FROM oneguard/php:7.2-cli
+FROM oneguard/php:7.2-cli-dev
 
 RUN apk add --no-cache git gnupg \
     && wget https://phar.io/releases/phive.phar \
