@@ -1,0 +1,4 @@
+namespace: test
+aliases:
+  latest: '1'
+  dev: '1-dev'
