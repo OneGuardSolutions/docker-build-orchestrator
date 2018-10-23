@@ -8,9 +8,8 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Tests\Utils;
+namespace App\Utils;
 
-use App\Utils\VersionUtils;
 use PHPUnit\Framework\TestCase;
 
 class VersionUtilsTest extends TestCase {
