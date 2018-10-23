@@ -6,3 +6,7 @@ dobr.phar
 dobr.phar.pubkey
 dobr.version
 gh-pages/
+
+###> phpunit/phpunit ###
+/phpunit.xml
+###< phpunit/phpunit ###

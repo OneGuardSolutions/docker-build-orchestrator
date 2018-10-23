@@ -9,7 +9,8 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
-        "ext-json": "*"
+        "ext-json": "*",
+        "phpunit/phpunit": "^7.4"
     },
     "config": {
         "preferred-install": {
