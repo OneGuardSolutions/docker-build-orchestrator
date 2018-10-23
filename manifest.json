@@ -7,6 +7,13 @@
     },
     {
         "name": "dobr.phar",
+        "sha1": "31d6601495eee17fb81dad06af5bffb961d722c1",
+        "url": "https:\/\/oneguardsolutions.github.io\/docker-build-orchestrator\/releases\/0.2.0-alpha2.1.g7f2e436\/dobr.phar",
+        "publicKey": "https:\/\/oneguardsolutions.github.io\/docker-build-orchestrator\/releases\/0.2.0-alpha2.1.g7f2e436\/dobr.phar.pubkey",
+        "version": "0.2.0-alpha2.1.g7f2e436"
+    },
+    {
+        "name": "dobr.phar",
         "sha1": "3785763e6d63ce428561b1501204eba83ee08bf5",
         "url": "https:\/\/oneguardsolutions.github.io\/docker-build-orchestrator\/releases\/0.2.0-alpha2\/dobr.phar",
         "publicKey": "https:\/\/oneguardsolutions.github.io\/docker-build-orchestrator\/releases\/0.2.0-alpha2\/dobr.phar.pubkey",
