@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App;
+namespace OneGuard\DockerBuildOrchestrator;
 
 use OneGuard\DockerBuildOrchestrator\Command\BuildCommand;
 use OneGuard\DockerBuildOrchestrator\Utils\VersionUtils;

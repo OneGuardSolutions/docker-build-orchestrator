@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use App\Application;
+use OneGuard\DockerBuildOrchestrator\Application;
 
 require __DIR__ . '/../vendor/autoload.php';
 
