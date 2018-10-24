@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Builder;
+namespace OneGuard\DockerBuildOrchestrator\Builder;
 
-use App\Builder\WorkingTree\Repository;
-use App\Builder\WorkingTree\Tag;
-use App\Builder\WorkingTree\Visitor\ConsoleOutputVisitor;
-use App\Builder\WorkingTree\WorkingTree;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\ConsoleOutputVisitor;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 use Symfony\Component\Finder\Finder;
 
 class Builder {

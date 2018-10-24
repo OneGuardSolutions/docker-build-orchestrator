@@ -20,12 +20,13 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "OneGuard\\DockerBuildOrchestrator\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\": "tests/"
+            "OneGuard\\DockerBuildOrchestrator\\": "tests/"
         }
     }
 }
+
