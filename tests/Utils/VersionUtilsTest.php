@@ -35,8 +35,8 @@ class VersionUtilsTest extends TestCase {
     public function versionProvider() {
         return [
             ['1.2.3', '1.2.3'],
-            ['1.2.3-alpha-1-ae7fs8974a', '1.2.3-alpha.1.ae7fs8974a'],
-            ['1.2.3-alpha1-ae7fs8974a', '1.2.3-alpha1.ae7fs8974a'],
+            ['1.2.3-alpha1', '1.2.3-alpha1'],
+            ['1.2.3-alpha1-1-ae7fs8974a', '1.2.3-alpha1.1.ae7fs8974a'],
             ['1.2.3-rc', '1.2.3-rc'],
             ['1.2.3-rc.1', '1.2.3-rc.1']
         ];
