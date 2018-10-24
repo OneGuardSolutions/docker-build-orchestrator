@@ -20,22 +20,11 @@ class WorkingTree {
      * @return string[]
      */
     public function getRepositoryNames() {
-        return array_map(
-            function (Repository $repository) {
-                return $repository->getName();
-            },
-            $this->repositories
-        );
+        return array_keys($this->repositories);
     }
 
     public function hasRepository(string $name): bool {
-        foreach ($this->repositories as $repository) {
-            if ($repository->getName() === $name) {
-                return true;
-            }
-        }
-
-        return false;
+        return isset($this->repositories[$name]);
     }
 
     /**
@@ -44,13 +33,11 @@ class WorkingTree {
      * @throws \OutOfBoundsException if no {@link Repository} with specified name is found
      */
     public function getRepository(string $name): Repository {
-        foreach ($this->repositories as $repository) {
-            if ($repository->getName() === $name) {
-                return $repository;
-            }
+        if (!$this->hasRepository($name)) {
+            throw new \OutOfBoundsException("No repository with name '$name'");
         }
 
-        throw new \OutOfBoundsException("No repository with name '$name'");
+        return $this->repositories[$name];
     }
 
     /**
@@ -66,24 +53,23 @@ class WorkingTree {
             throw new \InvalidArgumentException("Repository with name '$name' already exists");
         }
 
-        $this->repositories[] = $repository;
+        $this->repositories[$name] = $repository;
         if ($repository->getWorkingTree() !== $this) {
             $repository->setWorkingTree($this);
         }
     }
 
     public function removeRepository(string $name): ?Repository {
-        foreach ($this->repositories as $i => $repository) {
-            if ($repository->getName() === $name) {
-                array_splice($this->repositories, $i, 1);
-                if ($repository->getWorkingTree() === $this) {
-                    $repository->setWorkingTree(null);
-                }
-
-                return $repository;
-            }
+        if (!$this->hasRepository($name)) {
+            return null;
         }
 
-        return null;
+        $repository = $this->repositories[$name];
+        unset($this->repositories[$name]);
+        if ($repository->getWorkingTree() === $this) {
+            $repository->setWorkingTree(null);
+        }
+
+        return $repository;
     }
 }
