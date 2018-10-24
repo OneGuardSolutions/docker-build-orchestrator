@@ -17,6 +17,20 @@ class RepositoryTest extends TestCase {
         $repository = new Repository('test');
 
         $this->assertEquals('test', $repository->getName());
+        $this->assertEquals('library', $repository->getNamespace());
+        $this->assertEquals('', $repository->getRegistry());
+    }
+
+    public function testGetNamespace() {
+        $repository = new Repository('test', 'test-namespace');
+
+        $this->assertEquals('test-namespace', $repository->getNamespace());
+    }
+
+    public function testGetRegistry() {
+        $repository = new Repository('test', 'library', 'test.registry.io');
+
+        $this->assertEquals('test.registry.io', $repository->getRegistry());
     }
 
     public function testAddAndHasAndGetTag() {
