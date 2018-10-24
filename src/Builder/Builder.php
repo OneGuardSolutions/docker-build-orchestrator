@@ -15,6 +15,7 @@ use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\ConsoleOutputVisitor;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
 
 class Builder {
     /**
@@ -66,11 +67,12 @@ class Builder {
     }
 
     private function parseRepositoryAndTagName(string $dockerFilePath) {
-        $dir = dirname($dockerFilePath);
-        $tagName = basename($dir);
-        $repositoryName = basename(dirname($dir));
+        $dockerFileDirectory = dirname($dockerFilePath);
+        $tagName = basename($dockerFileDirectory);
+        $repositoryDirectory = dirname($dockerFileDirectory);
+        $repositoryName = basename(dirname($dockerFileDirectory));
 
-        return [$repositoryName, $tagName];
+        return [$repositoryDirectory, $repositoryName, $tagName];
     }
 
     /**
@@ -80,12 +82,21 @@ class Builder {
     public function buildWorkingTree(array $dockerFiles): WorkingTree {
         $workingTree = new WorkingTree();
         foreach ($dockerFiles as $dockerFile) {
-            [$repositoryName, $tagName] = $this->parseRepositoryAndTagName($dockerFile);
+            [$repositoryDirectory, $repositoryName, $tagName] = $this->parseRepositoryAndTagName($dockerFile);
+            $configuration = [
+                'registry' => '',
+                'namespace' => 'library',
+                'aliases' => []
+            ];
+            if (is_file($repositoryDirectory . '/repository.yaml')) {
+                $newConf = Yaml::parseFile($repositoryDirectory . '/repository.yaml');
+                $configuration = array_merge($configuration, $newConf);
+            }
             $repository = null;
             if ($workingTree->hasRepository($repositoryName)) {
                 $repository = $workingTree->getRepository($repositoryName);
             } else {
-                $repository = new Repository($repositoryName);
+                $repository = new Repository($repositoryName, $configuration['namespace'], $configuration['registry']);
                 $workingTree->addRepository($repository);
             }
 

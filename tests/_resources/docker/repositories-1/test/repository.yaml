@@ -1,4 +1,4 @@
-repository: ''
+registry: 'test.docker.io'
 namespace: test
 aliases:
   latest: '1'
