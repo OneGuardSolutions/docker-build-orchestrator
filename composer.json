@@ -6,7 +6,7 @@
         "deployer/phar-update": "^2.1",
         "symfony/console": "^4.1",
         "symfony/finder": "^4.1",
-        "symfony/yaml": "*"
+        "symfony/yaml": "^4.1"
     },
     "require-dev": {
         "ext-json": "*",
