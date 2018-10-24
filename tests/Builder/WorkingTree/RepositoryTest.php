@@ -148,6 +148,6 @@ class RepositoryTest extends TestCase {
     public function testGetFullName() {
         $repository = new Repository('test', 'tester', 'test.docker.io');
 
-        $this->assertEquals('', $repository->getFullName());
+        $this->assertEquals('test.docker.io/tester/test', $repository->getFullName());
     }
 }
