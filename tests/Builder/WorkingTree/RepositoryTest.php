@@ -73,6 +73,15 @@ class RepositoryTest extends TestCase {
         $this->assertNull($result);
     }
 
+    public function testGetTagNames() {
+        $repository = new Repository('test');
+        $repository->addTag(new Tag('test-1'));
+        $repository->addTag(new Tag('test-2'));
+        $repository->addTag(new Tag('test-3'));
+
+        $this->assertEquals(['test-1', 'test-2', 'test-3'], $repository->getTagNames());
+    }
+
     /**
      * @expectedException \OutOfBoundsException
      * @expectedExceptionMessage No tag with name 'not-exists'
@@ -134,5 +143,11 @@ class RepositoryTest extends TestCase {
         $workingTree->addRepository($repository1);
 
         $repository2->setWorkingTree($workingTree);
+    }
+
+    public function testGetFullName() {
+        $repository = new Repository('test', 'tester', 'test.docker.io');
+
+        $this->assertEquals('', $repository->getFullName());
     }
 }
