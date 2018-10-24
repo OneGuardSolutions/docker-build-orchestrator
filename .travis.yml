@@ -33,4 +33,4 @@ deploy:
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH == "v2" || -n $TRAVIS_TAG
-    php: '7.1'
+    php: '7.2'

@@ -36,9 +36,9 @@ class Repository {
      */
     private $tags = [];
 
-    public function __construct(string $name, string $owner = 'library', string $registry = '') {
+    public function __construct(string $name, string $namespace = 'library', string $registry = '') {
         $this->registry = $registry;
-        $this->namespace = $owner;
+        $this->namespace = $namespace;
         $this->name = $name;
     }
 

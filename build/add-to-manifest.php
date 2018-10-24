@@ -10,6 +10,14 @@
  *
  */
 
+function compareEntries(array $a, array $b) {
+    if ($a['name'] !== $b['name']) {
+        return $a['name'] < $b['name'] ? -2 : 2;
+    }
+
+    return $a['version'] === $b['version'] ? 0 : ($a['version'] < $b['version'] ? -1 : 1);
+}
+
 if (count($argv) !== 6 && count($argv) !== 7) {
     echo "Usage: php add-to-manifest.php <name> <url> <publicKey> <sha1> <version> [<manifest_file>]\n";
     exit(1);
@@ -29,6 +37,7 @@ $entry = [
     'version' => $version
 ];
 
+/** @noinspection PhpComposerExtensionStubsInspection */
 $manifest = file_exists($manifestFile) ? json_decode(file_get_contents($manifestFile), true) : [];
 $manifest = array_filter(
     $manifest,
@@ -39,9 +48,8 @@ $manifest = array_filter(
 $manifest[] = $entry;
 usort(
     $manifest,
-    function ($e1, $e2) {
-        return $e1 < $e2 ? -1 : ($e1 > $e2 ? 1 : 0);
-    }
+    'compareEntries'
 );
 
+/** @noinspection PhpComposerExtensionStubsInspection */
 file_put_contents($manifestFile, json_encode($manifest, JSON_PRETTY_PRINT));
