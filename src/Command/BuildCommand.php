@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Command;
+namespace OneGuard\DockerBuildOrchestrator\Command;
 
-use App\Builder\Builder;
+use OneGuard\DockerBuildOrchestrator\Builder\Builder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

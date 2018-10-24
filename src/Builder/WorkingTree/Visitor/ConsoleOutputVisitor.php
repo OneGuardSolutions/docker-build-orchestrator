@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Builder\WorkingTree\Visitor;
+namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor;
 
-use App\Builder\WorkingTree\Repository;
-use App\Builder\WorkingTree\Tag;
-use App\Builder\WorkingTree\WorkingTree;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 
 class ConsoleOutputVisitor implements VisitorInterface {
     function visitWorkingTree(WorkingTree $workingTree) {

@@ -10,8 +10,8 @@
 
 namespace App;
 
-use App\Command\BuildCommand;
-use App\Utils\VersionUtils;
+use OneGuard\DockerBuildOrchestrator\Command\BuildCommand;
+use OneGuard\DockerBuildOrchestrator\Utils\VersionUtils;
 use Deployer\Component\PharUpdate\Console\Command;
 use Deployer\Component\PharUpdate\Console\Helper;
 

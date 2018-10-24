@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Builder\WorkingTree;
+namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree;
 
 class Repository {
     /**

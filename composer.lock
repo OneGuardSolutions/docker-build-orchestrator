@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e253abc3a87c0a92cc63fee56b4d2e8c",
+    "content-hash": "3fa69d9dcb4f9f60d9efb58bc15557bd",
     "packages": [
         {
             "name": "deployer/phar-update",
