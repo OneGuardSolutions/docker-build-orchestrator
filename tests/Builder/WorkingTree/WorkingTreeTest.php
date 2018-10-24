@@ -52,6 +52,15 @@ class WorkingTreeTest extends TestCase {
         $this->assertNull($result);
     }
 
+    public function testGetRepositoryNames() {
+        $workingTree = new WorkingTree();
+        $workingTree->addRepository(new Repository('test-1'));
+        $workingTree->addRepository(new Repository('test-2'));
+        $workingTree->addRepository(new Repository('test-3'));
+
+        $this->assertEquals(['test-1', 'test-2', 'test-3'], $workingTree->getRepositoryNames());
+    }
+
     /**
      * @expectedException \OutOfBoundsException
      * @expectedExceptionMessage No repository with name 'not-exists'

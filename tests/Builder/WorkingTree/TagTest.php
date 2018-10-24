@@ -60,4 +60,18 @@ class TagTest extends TestCase {
 
         $tag2->setRepository($repository);
     }
+
+    public function testGetFullName() {
+        $repository = new Repository('test', 'tester', 'test.docker.io');
+        $tag = new Tag('1');
+        $repository->addTag($tag);
+
+        $this->assertEquals('test.docker.io/tester/test:1', $tag->getFullName());
+    }
+
+    public function testGetFullNameNoRepository() {
+        $tag = new Tag('1');
+
+        $this->assertEquals('1', $tag->getFullName());
+    }
 }
