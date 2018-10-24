@@ -88,22 +88,11 @@ class Repository {
      * @return string[]
      */
     public function getTagNames(): array {
-        return array_map(
-            function (Tag $tag) {
-                return $tag->getName();
-            },
-            $this->tags
-        );
+        return array_keys($this->tags);
     }
 
     public function hasTag(string $name): bool {
-        foreach ($this->tags as $tag) {
-            if ($tag->getName() === $name) {
-                return true;
-            }
-        }
-
-        return false;
+        return !empty($this->tags[$name]);
     }
 
     /**
@@ -112,13 +101,11 @@ class Repository {
      * @throws \OutOfBoundsException if no {@link Tag} with specified name is found
      */
     public function getTag(string $name): Tag {
-        foreach ($this->tags as $tag) {
-            if ($tag->getName() === $name) {
-                return $tag;
-            }
+        if (!$this->hasTag($name)) {
+            throw new \OutOfBoundsException("No tag with name '$name'");
         }
 
-        throw new \OutOfBoundsException("No tag with name '$name'");
+        return $this->tags[$name];
     }
 
     /**
@@ -134,25 +121,24 @@ class Repository {
             throw new \InvalidArgumentException("Tag with name '$name' already exists");
         }
 
-        $this->tags[] = $tag;
+        $this->tags[$name] = $tag;
         if ($tag->getRepository() !== $this) {
             $tag->setRepository($this);
         }
     }
 
     public function removeTag(string $name): ?Tag {
-        foreach ($this->tags as $i => $tag) {
-            if ($tag->getName() === $name) {
-                array_splice($this->tags, $i, 1);
-                if ($tag->getRepository() === $this) {
-                    $tag->setRepository(null);
-                }
-
-                return $tag;
-            }
+        if (!$this->hasTag($name)) {
+            return null;
         }
 
-        return null;
+        $tag = $this->tags[$name];
+        unset($this->tags[$name]);
+        if ($tag->getRepository() === $this) {
+            $tag->setRepository(null);
+        }
+
+        return $tag;
     }
 
     public function getFullName(): string {
