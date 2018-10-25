@@ -10,16 +10,16 @@
 
 namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree;
 
-class Tag {
+abstract class Tag {
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var Repository|null
      */
-    private $repository;
+    protected $repository;
 
     public function __construct(string $name) {
         $this->name = $name;

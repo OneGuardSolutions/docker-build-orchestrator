@@ -35,12 +35,16 @@ class BuildCommand extends Command {
         $io = new SymfonyStyle($input, $output);
         $dirs = $input->getOption('directory');
         if (empty($dirs)) {
-            $io->getErrorStyle()->writeln('<comment>No root directories specified, adding current working directory.</comment>');
+            $io->getErrorStyle()->writeln(
+                '<comment>No root directories specified, adding current working directory.</comment>'
+            );
             $dirs[] = getcwd();
         }
 
         $builder = new Builder();
-        $builder->buildAll($dirs);
+        $workingTree = $builder->buildAll($dirs);
+
+        (new ConsoleOutputVisitor($io))->visitWorkingTree($workingTree);
 
         return 0;
     }

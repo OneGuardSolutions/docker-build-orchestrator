@@ -1,0 +1,6 @@
+registry: 'test-2.docker.io'
+namespace: test
+aliases:
+  latest: '1'
+  edge: '2'
+  '2': '2.0'

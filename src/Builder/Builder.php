@@ -10,9 +10,9 @@
 
 namespace OneGuard\DockerBuildOrchestrator\Builder;
 
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Alias;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
-use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
-use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\ConsoleOutputVisitor;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
@@ -20,8 +20,9 @@ use Symfony\Component\Yaml\Yaml;
 class Builder {
     /**
      * @param string[]|\SplFileInfo[] $rootDirs
+     * @return WorkingTree
      */
-    public function buildAll(array $rootDirs): void {
+    public function buildAll(array $rootDirs): WorkingTree {
         $dockerFiles = array_merge(...array_map(
             function ($rootDir) {
                 if ($rootDir instanceof \SplFileInfo) {
@@ -43,9 +44,8 @@ class Builder {
 
         sort($dockerFiles);
         $dockerFiles = array_unique($dockerFiles);
-        $workingTree = $this->buildWorkingTree($dockerFiles);
 
-        (new ConsoleOutputVisitor())->visitWorkingTree($workingTree);
+        return $this->buildWorkingTree($dockerFiles);
     }
 
     /**
@@ -83,27 +83,42 @@ class Builder {
         $workingTree = new WorkingTree();
         foreach ($dockerFiles as $dockerFile) {
             [$repositoryDirectory, $repositoryName, $tagName] = $this->parseRepositoryAndTagName($dockerFile);
-            $configuration = [
-                'registry' => '',
-                'namespace' => 'library',
-                'aliases' => []
-            ];
-            if (is_file($repositoryDirectory . '/repository.yaml')) {
-                $newConf = Yaml::parseFile($repositoryDirectory . '/repository.yaml');
-                $configuration = array_merge($configuration, $newConf);
-            }
             $repository = null;
             if ($workingTree->hasRepository($repositoryName)) {
                 $repository = $workingTree->getRepository($repositoryName);
             } else {
+                $configuration = $this->parseConfigFile($repositoryDirectory);
                 $repository = new Repository($repositoryName, $configuration['namespace'], $configuration['registry']);
+                foreach ($configuration['aliases'] as $alias => $reference) {
+                    $repository->addTag(new Alias($alias, $reference));
+                }
                 $workingTree->addRepository($repository);
             }
 
-            $tag = new Tag($tagName);
+            $tag = new NamedImage($tagName, $dockerFile);
             $repository->addTag($tag);
         }
 
         return $workingTree;
+    }
+
+    public function parseConfigFile(string $repositoryDirectory): array {
+        $configuration = [
+            'registry' => '',
+            'namespace' => 'library',
+            'aliases' => []
+        ];
+        $configFile = null;
+        if (is_file($repositoryDirectory . '/repository.yaml')) {
+            $configFile = $repositoryDirectory . '/repository.yaml';
+        } else if (is_file($repositoryDirectory . '/repository.yml')) {
+            $configFile = $repositoryDirectory . '/repository.yml';
+        }
+
+        if ($configFile !== null) {
+            $configuration = array_merge($configuration, Yaml::parseFile($configFile));
+        }
+
+        return $configuration;
     }
 }
