@@ -14,6 +14,7 @@ use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Alias;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
+use OneGuard\DockerBuildOrchestrator\Utils\DockerfileUtils;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
@@ -66,15 +67,6 @@ class Builder {
         return $files;
     }
 
-    private function parseRepositoryAndTagName(string $dockerFilePath) {
-        $dockerFileDirectory = dirname($dockerFilePath);
-        $tagName = basename($dockerFileDirectory);
-        $repositoryDirectory = dirname($dockerFileDirectory);
-        $repositoryName = basename(dirname($dockerFileDirectory));
-
-        return [$repositoryDirectory, $repositoryName, $tagName];
-    }
-
     /**
      * @param string[] $dockerFiles
      * @return WorkingTree
@@ -82,7 +74,7 @@ class Builder {
     public function buildWorkingTree(array $dockerFiles): WorkingTree {
         $workingTree = new WorkingTree();
         foreach ($dockerFiles as $dockerFile) {
-            [$repositoryDirectory, $repositoryName, $tagName] = $this->parseRepositoryAndTagName($dockerFile);
+            [$repositoryDirectory, $repositoryName, $tagName] = DockerfileUtils::parseRepositoryAndTagName($dockerFile);
             $repository = null;
             if ($workingTree->hasRepository($repositoryName)) {
                 $repository = $workingTree->getRepository($repositoryName);
