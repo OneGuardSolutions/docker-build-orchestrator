@@ -10,14 +10,14 @@
 
 namespace OneGuard\DockerBuildOrchestrator;
 
-use OneGuard\DockerBuildOrchestrator\Command\BuildCommand;
-use OneGuard\DockerBuildOrchestrator\Utils\VersionUtils;
 use Deployer\Component\PharUpdate\Console\Command;
 use Deployer\Component\PharUpdate\Console\Helper;
+use OneGuard\DockerBuildOrchestrator\Command\BuildCommand;
+use OneGuard\DockerBuildOrchestrator\Utils\VersionUtils;
 
 class Application extends \Symfony\Component\Console\Application {
     public function __construct($version) {
-        parent::__construct('dobr', (new VersionUtils())->normalize($version));
+        parent::__construct('dobr', VersionUtils::normalize($version));
 
         $this->getHelperSet()->set(new Helper());
 

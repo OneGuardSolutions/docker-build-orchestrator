@@ -14,22 +14,13 @@ use PHPUnit\Framework\TestCase;
 
 class VersionUtilsTest extends TestCase {
     /**
-     * @var VersionUtils
-     */
-    private static $utils;
-
-    public static function setUpBeforeClass() {
-        self::$utils = new VersionUtils();
-    }
-
-    /**
      * @param string $version
      * @param string $expected
      *
      * @dataProvider versionProvider
      */
     public function testNormalize(string $version, string $expected) {
-        $this->assertEquals($expected, self::$utils->normalize($version));
+        $this->assertEquals($expected, VersionUtils::normalize($version));
     }
 
     public function versionProvider() {
