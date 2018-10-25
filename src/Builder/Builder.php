@@ -24,13 +24,17 @@ class Builder {
      * @return WorkingTree
      */
     public function buildAll(array $rootDirs): WorkingTree {
+        if (empty($rootDirs)) {
+            throw new \InvalidArgumentException('No root directory');
+        }
+
         $dockerFiles = array_merge(...array_map(
             function ($rootDir) {
                 if ($rootDir instanceof \SplFileInfo) {
                     $rootDir = $rootDir->getPathname();
                 } else if (!is_string($rootDir)) {
                     throw new \InvalidArgumentException(
-                        'expected string or SplFileInfo, got ' . gettype($rootDir)
+                        'Expected string or SplFileInfo, got ' . gettype($rootDir)
                     );
                 }
 

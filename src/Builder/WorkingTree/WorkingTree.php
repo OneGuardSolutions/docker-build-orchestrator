@@ -19,7 +19,7 @@ class WorkingTree {
     /**
      * @return string[]
      */
-    public function getRepositoryNames() {
+    public function getRepositoryNames(): array {
         return array_keys($this->repositories);
     }
 

@@ -44,7 +44,7 @@ class BuildCommand extends Command {
         $builder = new Builder();
         $workingTree = $builder->buildAll($dirs);
 
-        (new ConsoleOutputVisitor($io))->visitWorkingTree($workingTree);
+        (new ConsoleOutputVisitor($io))->visit($workingTree);
 
         return 0;
     }
