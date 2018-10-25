@@ -1,1 +1,2 @@
-namespace: test-2
+registry: 'test.docker.io'
+namespace: test

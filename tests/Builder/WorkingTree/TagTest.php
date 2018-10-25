@@ -14,14 +14,14 @@ use PHPUnit\Framework\TestCase;
 
 class TagTest extends TestCase {
     public function testGetName() {
-        $tag = new Tag('test');
+        $tag = new TestTag('test');
 
         $this->assertEquals('test', $tag->getName());
     }
 
     public function testSetAndGetRepository() {
         $repository = new Repository('test');
-        $tag = new Tag('1');
+        $tag = new TestTag('1');
         $tag->setRepository($repository);
 
         $this->assertSame($repository, $tag->getRepository());
@@ -30,7 +30,7 @@ class TagTest extends TestCase {
 
     public function testSetRepositoryUnset() {
         $repository = new Repository('test');
-        $tag = new Tag('1');
+        $tag = new TestTag('1');
         $tag->setRepository($repository);
         $tag->setRepository(null);
 
@@ -40,7 +40,7 @@ class TagTest extends TestCase {
 
     public function testSetRepositorySame() {
         $repository = new Repository('test');
-        $tag = new Tag('1');
+        $tag = new TestTag('1');
         $tag->setRepository($repository);
         $tag->setRepository($repository);
 
@@ -54,8 +54,8 @@ class TagTest extends TestCase {
      */
     public function testSetRepositoryWithSuchTagNoReplace() {
         $repository = new Repository('test');
-        $tag1 = new Tag('1');
-        $tag2 = new Tag('1');
+        $tag1 = new TestTag('1');
+        $tag2 = new TestTag('1');
         $repository->addTag($tag1);
 
         $tag2->setRepository($repository);
@@ -63,14 +63,14 @@ class TagTest extends TestCase {
 
     public function testGetFullName() {
         $repository = new Repository('test', 'tester', 'test.docker.io');
-        $tag = new Tag('1');
+        $tag = new TestTag('1');
         $repository->addTag($tag);
 
         $this->assertEquals('test.docker.io/tester/test:1', $tag->getFullName());
     }
 
     public function testGetFullNameNoRepository() {
-        $tag = new Tag('1');
+        $tag = new TestTag('1');
 
         $this->assertEquals('1', $tag->getFullName());
     }

@@ -3,3 +3,7 @@ namespace: test
 aliases:
   latest: '1'
   dev: '1-dev'
+  '1': '1.2'
+  '1.2': '1.2.3'
+  '1-dev': '1.2-dev'
+  '1.2-dev': '1.2.3-dev'

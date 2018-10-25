@@ -35,8 +35,8 @@ class RepositoryTest extends TestCase {
 
     public function testAddAndHasAndGetTag() {
         $repository = new Repository('test');
-        $tag1 = new Tag('1');
-        $tag2 = new Tag('2');
+        $tag1 = new TestTag('1');
+        $tag2 = new TestTag('2');
 
         $this->assertFalse($repository->hasTag('1'));
         $this->assertFalse($repository->hasTag('2'));
@@ -54,7 +54,7 @@ class RepositoryTest extends TestCase {
 
     public function testRemoveTag() {
         $repository = new Repository('test');
-        $tag = new Tag('1');
+        $tag = new TestTag('1');
         $repository->addTag($tag);
 
         $this->assertTrue($repository->hasTag('1'));
@@ -75,9 +75,9 @@ class RepositoryTest extends TestCase {
 
     public function testGetTagNames() {
         $repository = new Repository('test');
-        $repository->addTag(new Tag('test-1'));
-        $repository->addTag(new Tag('test-2'));
-        $repository->addTag(new Tag('test-3'));
+        $repository->addTag(new TestTag('test-1'));
+        $repository->addTag(new TestTag('test-2'));
+        $repository->addTag(new TestTag('test-3'));
 
         $this->assertEquals(['test-1', 'test-2', 'test-3'], $repository->getTagNames());
     }
@@ -97,8 +97,8 @@ class RepositoryTest extends TestCase {
      */
     public function testAddTagAlreadyExists() {
         $repository = new Repository('test');
-        $tag1 = new Tag('1');
-        $tag2 = new Tag('1');
+        $tag1 = new TestTag('1');
+        $tag2 = new TestTag('1');
         $repository->addTag($tag1);
         $repository->addTag($tag2); // this line should cause an exception
     }
