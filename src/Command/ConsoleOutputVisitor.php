@@ -6,11 +6,10 @@ use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Alias;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
-use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\VisitorInterface;
-use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\SimpleVisitor;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ConsoleOutputVisitor implements VisitorInterface {
+class ConsoleOutputVisitor extends SimpleVisitor {
     /**
      * @var OutputInterface
      */
@@ -20,25 +19,8 @@ class ConsoleOutputVisitor implements VisitorInterface {
         $this->output = $output;
     }
 
-    public function visitWorkingTree(WorkingTree $workingTree) {
-        $repositoryNames = $workingTree->getRepositoryNames();
-        sort($repositoryNames, SORT_ASC);
-
-        foreach ($repositoryNames as $repositoryName) {
-            $repository = $workingTree->getRepository($repositoryName);
-            $this->visitRepository($repository);
-        }
-    }
-
-    public function visitRepository(Repository $repository) {
-        $tagNames = $repository->getTagNames();
-        sort($tagNames, SORT_ASC);
-
+    protected function beforeRepository(Repository $repository) {
         $this->output->writeln(sprintf(' - %s', $repository->getFullName()));
-        foreach ($tagNames as $tagName) {
-            $tag = $repository->getTag($tagName);
-            $this->visitTag($tag);
-        }
     }
 
     public function visitTag(Tag $tag) {

@@ -15,7 +15,7 @@ use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 
 interface VisitorInterface {
-    function visitWorkingTree(WorkingTree $workingTree);
-    function visitRepository(Repository $repository);
-    function visitTag(Tag $tag);
+    public function visit(WorkingTree $workingTree);
+    public function visitRepository(Repository $repository);
+    public function visitTag(Tag $tag);
 }
