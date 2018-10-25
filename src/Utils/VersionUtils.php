@@ -15,7 +15,7 @@ class VersionUtils {
      * @param string $version
      * @return string
      */
-    public function normalize(string $version) {
+    public static function normalize(string $version) {
         $i = strpos($version, '-');
         if ($i === false) {
             return $version;
