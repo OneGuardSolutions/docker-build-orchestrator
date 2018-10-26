@@ -16,7 +16,13 @@ use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\SimpleVisitor
+ */
 class SimpleVisitorTest extends TestCase {
+    /**
+     * @covers ::visit
+     */
     public function testVisit() {
         $workingTree = new WorkingTree();
         $repository1 = new Repository('test-1');
@@ -42,6 +48,9 @@ class SimpleVisitorTest extends TestCase {
         $mockVisitor->visit($workingTree);
     }
 
+    /**
+     * @covers ::visitRepository
+     */
     public function testVisitRepository() {
         $repository = new Repository('test');
         $tag1 = new Alias('1', '1.0');

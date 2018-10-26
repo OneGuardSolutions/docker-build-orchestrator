@@ -11,6 +11,7 @@
 namespace OneGuard\DockerBuildOrchestrator\Command;
 
 use OneGuard\DockerBuildOrchestrator\Builder\Builder;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\ConsoleOutputVisitor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,7 +22,7 @@ class BuildCommand extends Command {
     protected function configure() {
         $this
             ->setName('build')
-            ->setDescription('Say hello')
+            ->setDescription('Builds docker images')
             ->addOption(
                 'directory',
                 'd',

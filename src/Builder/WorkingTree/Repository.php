@@ -10,6 +10,8 @@
 
 namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree;
 
+use OneGuard\DockerBuildOrchestrator\Utils\RepositoryUtils;
+
 class Repository {
     /**
      * @var string
@@ -69,9 +71,10 @@ class Repository {
         $oldWorkingTree = $this->workingTree;
         $this->workingTree = $workingTree;
 
+        $fullName = $this->getFullName();
         // unregister from old working tree
-        if ($oldWorkingTree !== $workingTree && $oldWorkingTree !== null && $oldWorkingTree->hasRepository($this->name)) {
-            $oldWorkingTree->removeRepository($this->name);
+        if ($oldWorkingTree !== $workingTree && $oldWorkingTree !== null && $oldWorkingTree->hasRepository($fullName)) {
+            $oldWorkingTree->removeRepository($fullName);
         }
 
         if ($workingTree === null) {
@@ -79,7 +82,7 @@ class Repository {
         }
 
         // register with new repository
-        if (!$workingTree->hasRepository($this->name) || $workingTree->getRepository($this->name) !== $this) {
+        if (!$workingTree->hasRepository($fullName) || $workingTree->getRepository($fullName) !== $this) {
             $workingTree->addRepository($this);
         }
     }
@@ -142,6 +145,6 @@ class Repository {
     }
 
     public function getFullName(): string {
-        return (empty($this->registry) ? '' : $this->registry . '/') . $this->namespace . '/' . $this->name;
+        return RepositoryUtils::generateFullName($this->name, $this->namespace, $this->registry);
     }
 }

@@ -12,7 +12,14 @@ namespace OneGuard\DockerBuildOrchestrator\Builder;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Builder\DirectoryNotFoundException
+ */
 class DirectoryNotFoundExceptionTest extends TestCase {
+    /**
+     * @covers ::__construct
+     * @covers ::getPath
+     */
     public function testGetPath() {
         $exception = new DirectoryNotFoundException('/test');
 

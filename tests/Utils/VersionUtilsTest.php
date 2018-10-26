@@ -12,12 +12,16 @@ namespace OneGuard\DockerBuildOrchestrator\Utils;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Utils\VersionUtils
+ */
 class VersionUtilsTest extends TestCase {
     /**
      * @param string $version
      * @param string $expected
      *
      * @dataProvider versionProvider
+     * @covers ::normalize
      */
     public function testNormalize(string $version, string $expected) {
         $this->assertEquals($expected, VersionUtils::normalize($version));

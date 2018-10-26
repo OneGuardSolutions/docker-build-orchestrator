@@ -12,7 +12,13 @@ namespace OneGuard\DockerBuildOrchestrator\Utils;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Utils\DockerfileUtils
+ */
 class DockerfileUtilsTest extends TestCase {
+    /**
+     * @covers ::parseRepositoryAndTagName
+     */
     public function testParseRepositoryAndTagName() {
         $this->assertEquals(
             ['root/test', 'test', '1'],

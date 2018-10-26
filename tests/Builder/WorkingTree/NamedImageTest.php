@@ -12,7 +12,14 @@ namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage
+ */
 class NamedImageTest extends TestCase {
+    /**
+     * @covers ::__construct
+     * @covers ::getDockerfilePath
+     */
     public function testGetDockerfilePath() {
         $namedImage = new NamedImage('1', 'tests/_resources/docker/repositories-1/test/1/Dockerfile');
 
