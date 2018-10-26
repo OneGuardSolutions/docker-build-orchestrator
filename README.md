@@ -11,50 +11,60 @@ Simple orchestrator for building docker images
 **Warning:** This version is **in early stage of development**.
 For working version see [v1](https://github.com/OneGuardSolutions/docker-build-orchestrator/tree/v1) branch.
 
+## Features
+
+- automatic build order determination based on `FROM` statements in `Dockerfile`
+- multistage build ordering support
+- cyclic dependency detection
+- automatic alias creation
+
 ## Installation
 
-Download latest release and make it executable:
-```bash
-$ curl -L -o ./dobr https://github.com/OneGuardSolutions/docker-build-orchestrator/releases/download/v0.1.0-beta1/dobr
-$ chmod +x ./dobr
-```
+Download the latest [release](https://github.com/OneGuardSolutions/docker-build-orchestrator/releases/latest)
+and its public key, and make it executable.
 
 ## Repository structure
 
-Each `Dockerfile` resides in a directory structure in format `<repository>/<tag>/Dockerfile`.
-All repositories *must have* configuration file in `<repository>/repository.conf`.
+Each `Dockerfile` resides in a directory structure in format `<root>/<repository>/<tag>/Dockerfile`.
+All repositories *may have* configuration file in `<repository>/repository.yaml`, or `<repository>/repository.yml`.
+If both `repository.yaml` and `repository.yml` are present `repository.yaml` has priority.
 
 ## Repository configuration
 
 Following configuration options are available:
-- *namespace* `required` - image namespace including optional custom registry host and port in format
-  `<registry_host>:<registry_port>/<owner>}`, if no custom registry is supplied,
-  docker will asume `docker.io` (Docker Hub)
-- *order* - comma-separated priority list,
-  tags listed here will be built in the specified order before those not listed
-<!-- Comming soon
-- *aliases* - comma-separated list od alias mappings in format `<alias>:<target>`,
-  currently only tags are supported as alias targets,
-  example: `latest:2,edge:3`
--->
+- *registry* `optional` - image registry, in form of `host[:port]`;
+    if nor provided, the default Docker registry will be used
+- *namespace* `optional` - image namespace (owner username);
+    if not is provided, `library` (top level repository) is assumed
+- *aliases* `optional` - alias mappings, keys are used as alias name,
+    and values as named image (tag) reference
 
 Example:
+```yaml
+# <root>/php/repository.yaml
+registry: 'docker.example.id'
+namespace: 'oneguard'
+aliases:
+  latest: '7.2'
+  dev: '7.2-dev'
 ```
-# php/repository.conf
-namespace=oneguard
-order=7.2-fpm,7.2-fpm-dev
-```
-<!-- Comming soon
-```
-# php/repository.conf
-namespace=oneguard
-order=7.2-fpm
-aliases=fpm:7.2-fpm,fpm-dev:7.2-fpm-dev,nginx:7.2-nginx
-```
--->
 
-## Future features
+## Future features ideas
 
-- automatic alias creation
-- automatic order determination
-- determining the need to rebuild the image by FROM image update & source change detection (optional)
+- Determining the need to rebuild the image
+  - base image update check
+  - source change detection check
+  - custom checks (e.g. used library has new release)
+- Custom image metadata support - could be used for with custom checks
+- WebHooks
+
+## License
+
+This software is under the MIT license. See the complete license attached with the source code:
+
+> [LICENSE](LICENSE)
+
+## Reporting an issue or requesting a feature
+
+Issues and feature requests are tracked in the
+[Github issue tracker](https://github.com/OneGuardSolutions/docker-build-orchestrator/issues).
