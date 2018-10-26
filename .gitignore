@@ -2,6 +2,7 @@ vendor/
 .travis/phar-private.pem
 
 # Build
+/build/logs/
 dobr.phar
 dobr.phar.pubkey
 dobr.version

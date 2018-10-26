@@ -10,7 +10,6 @@
     <php>
         <ini name="error_reporting" value="-1" />
         <env name="SHELL_VERBOSITY" value="-1" />
-        <!-- define your env variables for the test env here -->
     </php>
 
     <testsuites>
@@ -24,4 +23,8 @@
             <directory>src</directory>
         </whitelist>
     </filter>
+
+    <logging>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
 </phpunit>

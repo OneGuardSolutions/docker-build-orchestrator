@@ -1,6 +1,14 @@
 # Docker Build Orchestrator
 
+[![Build Status](https://travis-ci.com/OneGuardSolutions/docker-build-orchestrator.svg?branch=master)](https://travis-ci.com/OneGuardSolutions/docker-build-orchestrator)
+[![Coverage Status](https://coveralls.io/repos/github/OneGuardSolutions/docker-build-orchestrator/badge.svg)](https://coveralls.io/github/OneGuardSolutions/docker-build-orchestrator)
+[![GitHub (pre-)release](https://img.shields.io/github/release/OneGuardSolutions/docker-build-orchestrator/all.svg)](https://github.com/OneGuardSolutions/docker-build-orchestrator/releases)
+[![GitHub license](https://img.shields.io/github/license/OneGuardSolutions/docker-build-orchestrator.svg)](https://github.com/OneGuardSolutions/docker-build-orchestrator/blob/master/LICENSE)
+
 Simple orchestrator for building docker images
+
+**Warning:** This version is **in early stage of development**.
+For working version see [v1](https://github.com/OneGuardSolutions/docker-build-orchestrator/tree/v1) branch.
 
 ## Installation
 

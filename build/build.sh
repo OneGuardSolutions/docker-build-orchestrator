@@ -2,9 +2,12 @@
 
 composer install --no-dev --no-interaction \
     || { echo "ERROR: failed to install dependencies" >&2; exit 1; }
-box compile -v
-box info dobr.phar
-./dobr.phar --version
+box compile -v \
+    || { echo "ERROR: failed to compile PHAR" >&2; exit 1; }
+box info dobr.phar \
+    || { echo "ERROR: failed to get information on compiled PHAR" >&2; exit 1; }
+./dobr.phar --version \
+    || { echo "ERROR: failed to get version of compiled PHAR" >&2; exit 1; }
 
 rm gh-pages/ -rf
 git clone https://github.com/OneGuardSolutions/docker-build-orchestrator.git gh-pages -b gh-pages
