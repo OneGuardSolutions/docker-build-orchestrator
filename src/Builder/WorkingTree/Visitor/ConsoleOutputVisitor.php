@@ -1,12 +1,19 @@
 <?php
+/*
+ * This file is part of the Docker Build Orchestrator project.
+ *
+ * (c) OneGuard <contact@oneguard.email>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-namespace OneGuard\DockerBuildOrchestrator\Command;
+namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor;
 
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Alias;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
-use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\SimpleVisitor;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConsoleOutputVisitor extends SimpleVisitor {
@@ -29,14 +36,14 @@ class ConsoleOutputVisitor extends SimpleVisitor {
         } else if ($tag instanceof NamedImage) {
             $this->visitNamedImage($tag);
         } else {
-            $this->output->write(sprintf("     ↳ %s", $tag->getName()));
+            $this->output->writeln(sprintf("     ↳ %s", $tag->getName()));
         }
     }
 
     public function visitAlias(Alias $alias) {
         $reference = $alias->getReference();
         $repository = $alias->getRepository();
-        if (!$repository->hasTag($alias->getReference())) {
+        if ($repository === null || !$repository->hasTag($alias->getReference())) {
             $reference = sprintf('<fg=red>%s</>', $reference);
         } else {
             $tag = $repository->getTag($reference);
@@ -44,7 +51,7 @@ class ConsoleOutputVisitor extends SimpleVisitor {
                 $reference = sprintf('<info>%s</info>', $reference);
             } else if ($tag instanceof Alias) {
                 $resolvedReference = null;
-                $resolved = $this->resolve($tag);
+                $resolved = $tag->resolve();
                 if ($resolved === null) {
                     $resolvedReference = '<fg=red>unresolved</>';
                 } else {
@@ -66,15 +73,5 @@ class ConsoleOutputVisitor extends SimpleVisitor {
             $namedImage->getName(),
             $dockerfilePath
         ));
-    }
-
-    private function resolve(Alias $alias): ?Tag {
-        $tag = $alias;
-        while ($tag instanceof Alias) {
-            $repository = $tag->getRepository();
-            $tag = $repository->hasTag($tag->getReference()) ? $repository->getTag($tag->getReference()) : null;
-        }
-
-        return $tag;
     }
 }

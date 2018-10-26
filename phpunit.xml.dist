@@ -5,6 +5,7 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.1/phpunit.xsd"
          colors="true"
          bootstrap="vendor/autoload.php"
+         forceCoversAnnotation="true"
 >
     <php>
         <ini name="error_reporting" value="-1" />

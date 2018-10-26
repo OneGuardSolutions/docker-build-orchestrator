@@ -48,7 +48,7 @@ class WorkingTree {
      * @throws \InvalidArgumentException if a {@link Repository} with same name is already registered in the {@link WorkingTree}
      */
     public function addRepository(Repository $repository): void {
-        $name = $repository->getName();
+        $name = $repository->getFullName();
         if ($this->hasRepository($name)) {
             throw new \InvalidArgumentException("Repository with name '$name' already exists");
         }

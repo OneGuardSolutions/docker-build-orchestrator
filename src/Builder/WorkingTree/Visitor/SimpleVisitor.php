@@ -13,11 +13,12 @@ namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
+use OneGuard\DockerBuildOrchestrator\Utils\RepositoryUtils;
 
 abstract class SimpleVisitor implements VisitorInterface {
     public function visit(WorkingTree $workingTree) {
         $repositoryNames = $workingTree->getRepositoryNames();
-        sort($repositoryNames, SORT_ASC | SORT_NUMERIC);
+        usort($repositoryNames, [RepositoryUtils::class, 'fullNameComparator']);
 
         $this->beforeWorkingTree($workingTree);
         foreach ($repositoryNames as $repositoryName) {

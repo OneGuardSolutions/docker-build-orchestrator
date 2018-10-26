@@ -12,7 +12,13 @@ namespace OneGuard\DockerBuildOrchestrator\Builder;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Builder\Builder
+ */
 class BuilderTest extends TestCase {
+    /**
+     * @covers ::buildAll
+     */
     public function testBuildAll() {
         $builder = new Builder();
         $workingTree = $builder->buildAll([
@@ -22,21 +28,22 @@ class BuilderTest extends TestCase {
 
         $this->assertCount(3, $workingTree->getRepositoryNames());
 
-        $repository = $workingTree->getRepository('test');
+        $repository = $workingTree->getRepository('test.docker.io/test/test');
         $this->assertEquals('test.docker.io/test/test', $repository->getFullName());
         $this->assertCount(8, $repository->getTagNames());
 
-        $repository = $workingTree->getRepository('test-2');
+        $repository = $workingTree->getRepository('test.docker.io/test/test-2');
         $this->assertEquals('test.docker.io/test/test-2', $repository->getFullName());
         $this->assertCount(1, $repository->getTagNames());
 
-        $repository = $workingTree->getRepository('test-3');
-        $this->assertEquals('test-2.docker.io/test/test-3', $repository->getFullName());
+        $repository = $workingTree->getRepository('test-2.docker.io/test/test');
+        $this->assertEquals('test-2.docker.io/test/test', $repository->getFullName());
         $this->assertCount(4, $repository->getTagNames());
     }
 
     /**
      * @expectedException \OneGuard\DockerBuildOrchestrator\Builder\NoDockerfileFoundException
+     * @covers ::buildAll
      */
     public function testBuildAllNoDockerfile() {
         $builder = new Builder();
@@ -46,6 +53,7 @@ class BuilderTest extends TestCase {
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage No root directory
+     * @covers ::buildAll
      */
     public function testBuildAllNoRootDir() {
         $builder = new Builder();
@@ -55,12 +63,16 @@ class BuilderTest extends TestCase {
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Expected string or SplFileInfo, got integer
+     * @covers ::buildAll
      */
     public function testBuildAllNotPathNorSplFileInfo() {
         $builder = new Builder();
         $builder->buildAll([1]);
     }
 
+    /**
+     * @covers ::findDockerFiles
+     */
     public function testFindDockerFiles() {
         $builder = new Builder();
         $root = realpath(__DIR__ . '/../_resources/docker/repositories-1');
@@ -85,12 +97,16 @@ class BuilderTest extends TestCase {
     /**
      * @expectedException \OneGuard\DockerBuildOrchestrator\Builder\DirectoryNotFoundException
      * @expectedExceptionMessage Directory '/not/exist' not found
+     * @covers ::findDockerFiles
      */
     public function testFindDockerFilesRootNotExist() {
         $builder = new Builder();
         $builder->findDockerFiles('/not/exist');
     }
 
+    /**
+     * @covers ::parseConfigFile
+     */
     public function testParseConfigFileDefaults() {
         $builder = new Builder();
         $this->assertEquals(
@@ -103,6 +119,9 @@ class BuilderTest extends TestCase {
         );
     }
 
+    /**
+     * @covers ::parseConfigFile
+     */
     public function testParseConfigFileYaml() {
         $builder = new Builder();
         $this->assertEquals(
@@ -122,6 +141,9 @@ class BuilderTest extends TestCase {
         );
     }
 
+    /**
+     * @covers ::parseConfigFile
+     */
     public function testParseConfigFileYml() {
         $builder = new Builder();
         $this->assertEquals(
@@ -134,6 +156,9 @@ class BuilderTest extends TestCase {
         );
     }
 
+    /**
+     * @covers ::buildWorkingTree
+     */
     public function testBuildWorkingTree() {
         $builder = new Builder();
         $root = __DIR__ . '/../_resources/docker/repositories-1';
@@ -144,23 +169,31 @@ class BuilderTest extends TestCase {
 
         $this->assertCount(1, $workingTree->getRepositoryNames());
 
-        $repository = $workingTree->getRepository('test');
+        $repository = $workingTree->getRepository('test.docker.io/test/test');
         $this->assertEquals('test.docker.io/test/test', $repository->getFullName());
         $this->assertCount(8, $repository->getTagNames());
 
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals('1.2', $repository->getTag('1')->getReference());
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals('1.2-dev', $repository->getTag('1-dev')->getReference());
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals('1.2.3', $repository->getTag('1.2')->getReference());
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals('1.2.3-dev', $repository->getTag('1.2-dev')->getReference());
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals(
             'test/1.2.3/Dockerfile',
             substr($repository->getTag('1.2.3')->getDockerfilePath(), strlen($root) + 1)
         );
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals(
             'test/1.2.3-dev/Dockerfile',
             substr($repository->getTag('1.2.3-dev')->getDockerfilePath(), strlen($root) + 1)
         );
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals('1-dev', $repository->getTag('dev')->getReference());
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->assertEquals('1', $repository->getTag('latest')->getReference());
     }
 }

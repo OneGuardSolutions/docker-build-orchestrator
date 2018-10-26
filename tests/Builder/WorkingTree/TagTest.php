@@ -12,13 +12,24 @@ namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag
+ */
 class TagTest extends TestCase {
+    /**
+     * @covers ::__construct
+     * @covers ::getName
+     */
     public function testGetName() {
         $tag = new TestTag('test');
 
         $this->assertEquals('test', $tag->getName());
     }
 
+    /**
+     * @covers ::getRepository
+     * @covers ::setRepository
+     */
     public function testSetAndGetRepository() {
         $repository = new Repository('test');
         $tag = new TestTag('1');
@@ -28,6 +39,9 @@ class TagTest extends TestCase {
         $this->assertSame($tag, $repository->getTag('1'));
     }
 
+    /**
+     * @covers ::setRepository
+     */
     public function testSetRepositoryUnset() {
         $repository = new Repository('test');
         $tag = new TestTag('1');
@@ -38,6 +52,9 @@ class TagTest extends TestCase {
         $this->assertFalse($repository->hasTag('1'));
     }
 
+    /**
+     * @covers ::setRepository
+     */
     public function testSetRepositorySame() {
         $repository = new Repository('test');
         $tag = new TestTag('1');
@@ -51,6 +68,7 @@ class TagTest extends TestCase {
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Tag with name '1' already exists
+     * @covers ::setRepository
      */
     public function testSetRepositoryWithSuchTagNoReplace() {
         $repository = new Repository('test');
@@ -61,6 +79,9 @@ class TagTest extends TestCase {
         $tag2->setRepository($repository);
     }
 
+    /**
+     * @covers ::getFullName
+     */
     public function testGetFullName() {
         $repository = new Repository('test', 'tester', 'test.docker.io');
         $tag = new TestTag('1');
@@ -69,6 +90,9 @@ class TagTest extends TestCase {
         $this->assertEquals('test.docker.io/tester/test:1', $tag->getFullName());
     }
 
+    /**
+     * @covers ::getFullName
+     */
     public function testGetFullNameNoRepository() {
         $tag = new TestTag('1');
 

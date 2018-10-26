@@ -15,6 +15,7 @@ use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 use OneGuard\DockerBuildOrchestrator\Utils\DockerfileUtils;
+use OneGuard\DockerBuildOrchestrator\Utils\RepositoryUtils;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
@@ -80,10 +81,15 @@ class Builder {
         foreach ($dockerFiles as $dockerFile) {
             [$repositoryDirectory, $repositoryName, $tagName] = DockerfileUtils::parseRepositoryAndTagName($dockerFile);
             $repository = null;
-            if ($workingTree->hasRepository($repositoryName)) {
-                $repository = $workingTree->getRepository($repositoryName);
+            $configuration = $this->parseConfigFile($repositoryDirectory);
+            $repositoryFullName = RepositoryUtils::generateFullName(
+                $repositoryName,
+                $configuration['namespace'],
+                $configuration['registry']
+            );
+            if ($workingTree->hasRepository($repositoryFullName)) {
+                $repository = $workingTree->getRepository($repositoryFullName);
             } else {
-                $configuration = $this->parseConfigFile($repositoryDirectory);
                 $repository = new Repository($repositoryName, $configuration['namespace'], $configuration['registry']);
                 foreach ($configuration['aliases'] as $alias => $reference) {
                     $repository->addTag(new Alias($alias, $reference));

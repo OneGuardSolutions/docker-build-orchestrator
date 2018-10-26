@@ -27,4 +27,16 @@ class Alias extends Tag {
     public function getReference(): string {
         return $this->reference;
     }
+
+    public function resolve(): ?Tag {
+        $tag = $this;
+        while ($tag instanceof Alias) {
+            $repository = $tag->getRepository();
+            $tag = $repository === null ?
+                null :
+                $repository->hasTag($tag->getReference()) ? $repository->getTag($tag->getReference()) : null;
+        }
+
+        return $tag;
+    }
 }

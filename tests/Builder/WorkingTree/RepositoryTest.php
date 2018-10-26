@@ -12,7 +12,14 @@ namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository
+ */
 class RepositoryTest extends TestCase {
+    /**
+     * @covers ::__construct
+     * @covers ::getName
+     */
     public function testGetName() {
         $repository = new Repository('test');
 
@@ -21,18 +28,31 @@ class RepositoryTest extends TestCase {
         $this->assertEquals('', $repository->getRegistry());
     }
 
+    /**
+     * @covers ::__construct
+     * @covers ::getNamespace
+     */
     public function testGetNamespace() {
         $repository = new Repository('test', 'test-namespace');
 
         $this->assertEquals('test-namespace', $repository->getNamespace());
     }
 
+    /**
+     * @covers ::__construct
+     * @covers ::getRegistry
+     */
     public function testGetRegistry() {
         $repository = new Repository('test', 'library', 'test.registry.io');
 
         $this->assertEquals('test.registry.io', $repository->getRegistry());
     }
 
+    /**
+     * @covers ::addTag
+     * @covers ::hasTag
+     * @covers ::getTag
+     */
     public function testAddAndHasAndGetTag() {
         $repository = new Repository('test');
         $tag1 = new TestTag('1');
@@ -52,6 +72,9 @@ class RepositoryTest extends TestCase {
         $this->assertSame($repository, $tag2->getRepository());
     }
 
+    /**
+     * @covers ::removeTag
+     */
     public function testRemoveTag() {
         $repository = new Repository('test');
         $tag = new TestTag('1');
@@ -66,6 +89,9 @@ class RepositoryTest extends TestCase {
         $this->assertNull($tag->getRepository());
     }
 
+    /**
+     * @covers ::removeTag
+     */
     public function testRemoveTagNotExists() {
         $repository = new Repository('test');
         $result = $repository->removeTag('not-exists');
@@ -73,6 +99,9 @@ class RepositoryTest extends TestCase {
         $this->assertNull($result);
     }
 
+    /**
+     * @covers ::getTagNames
+     */
     public function testGetTagNames() {
         $repository = new Repository('test');
         $repository->addTag(new TestTag('test-1'));
@@ -85,6 +114,7 @@ class RepositoryTest extends TestCase {
     /**
      * @expectedException \OutOfBoundsException
      * @expectedExceptionMessage No tag with name 'not-exists'
+     * @covers ::getTag
      */
     public function testGetTagNotExists() {
         $repository = new Repository('test');
@@ -94,6 +124,7 @@ class RepositoryTest extends TestCase {
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Tag with name '1' already exists
+     * @covers ::addTag
      */
     public function testAddTagAlreadyExists() {
         $repository = new Repository('test');
@@ -103,15 +134,22 @@ class RepositoryTest extends TestCase {
         $repository->addTag($tag2); // this line should cause an exception
     }
 
+    /**
+     * @covers ::getWorkingTree
+     * @covers ::setWorkingTree
+     */
     public function testSetAndGetWorkingTree() {
         $workingTree = new WorkingTree();
         $repository = new Repository('test');
         $repository->setWorkingTree($workingTree);
 
         $this->assertSame($workingTree, $repository->getWorkingTree());
-        $this->assertSame($repository, $workingTree->getRepository('test'));
+        $this->assertSame($repository, $workingTree->getRepository('library/test'));
     }
 
+    /**
+     * @covers ::setWorkingTree
+     */
     public function testSetWorkingTreeUnset() {
         $workingTree = new WorkingTree();
         $repository = new Repository('test');
@@ -119,9 +157,12 @@ class RepositoryTest extends TestCase {
         $repository->setWorkingTree(null);
 
         $this->assertSame(null, $repository->getWorkingTree());
-        $this->assertFalse($workingTree->hasRepository('test'));
+        $this->assertFalse($workingTree->hasRepository('library/test'));
     }
 
+    /**
+     * @covers ::setWorkingTree
+     */
     public function testSetWorkingTreeSame() {
         $workingTree = new WorkingTree();
         $repository = new Repository('test');
@@ -129,12 +170,13 @@ class RepositoryTest extends TestCase {
         $repository->setWorkingTree($workingTree);
 
         $this->assertSame($workingTree, $repository->getWorkingTree());
-        $this->assertSame($repository, $workingTree->getRepository('test'));
+        $this->assertSame($repository, $workingTree->getRepository('library/test'));
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Repository with name 'test' already exists
+     * @expectedExceptionMessage Repository with name 'library/test' already exists
+     * @covers ::setWorkingTree
      */
     public function testSetWorkingTreeWithSuchRepositoryNoReplace() {
         $workingTree = new WorkingTree();
@@ -145,6 +187,9 @@ class RepositoryTest extends TestCase {
         $repository2->setWorkingTree($workingTree);
     }
 
+    /**
+     * @covers ::getFullName
+     */
     public function testGetFullName() {
         $repository = new Repository('test', 'tester', 'test.docker.io');
 
