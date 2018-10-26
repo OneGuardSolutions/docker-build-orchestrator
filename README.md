@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/OneGuardSolutions/docker-build-orchestrator.svg?branch=master)](https://travis-ci.com/OneGuardSolutions/docker-build-orchestrator)
 [![Coverage Status](https://coveralls.io/repos/github/OneGuardSolutions/docker-build-orchestrator/badge.svg)](https://coveralls.io/github/OneGuardSolutions/docker-build-orchestrator)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0652bcdaf9909daf9d36/maintainability)](https://codeclimate.com/github/OneGuardSolutions/docker-build-orchestrator/maintainability)
 [![GitHub (pre-)release](https://img.shields.io/github/release/OneGuardSolutions/docker-build-orchestrator/all.svg)](https://github.com/OneGuardSolutions/docker-build-orchestrator/releases)
 [![GitHub license](https://img.shields.io/github/license/OneGuardSolutions/docker-build-orchestrator.svg)](https://github.com/OneGuardSolutions/docker-build-orchestrator/blob/master/LICENSE)
 
