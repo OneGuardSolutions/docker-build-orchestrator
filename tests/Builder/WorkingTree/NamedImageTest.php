@@ -21,11 +21,35 @@ class NamedImageTest extends TestCase {
      * @covers ::getDockerfilePath
      */
     public function testGetDockerfilePath() {
-        $namedImage = new NamedImage('1', 'tests/_resources/docker/repositories-1/test/1/Dockerfile');
+        $namedImage = new NamedImage('1', __DIR__ . '/../../_resources/docker/repositories-1/test/1.2.3/Dockerfile');
 
         $this->assertEquals(
-            'tests/_resources/docker/repositories-1/test/1/Dockerfile',
-            $namedImage->getDockerfilePath()
+            'tests/_resources/docker/repositories-1/test/1.2.3/Dockerfile',
+            $this->relativePaths(realpath($namedImage->getDockerfilePath()))
         );
+    }
+
+    /**
+     * @covers ::__construct
+     * @covers ::getDependencies
+     */
+    public function testGetDependencies() {
+        $namedImage = new NamedImage('1', __DIR__ . '/../../_resources/docker/repositories-1/test/1.2.3-dev/Dockerfile');
+
+        $this->assertEquals(['busybox:latest', 'test.docker.io/test/test:1.2.3'], $namedImage->getDependencies());
+    }
+
+    /**
+     * @covers ::__construct
+     * @covers ::getDependencies
+     */
+    public function testGetDependenciesFileNotExists() {
+        $namedImage = new NamedImage('1', '/not/exist');
+
+        $this->assertNull($namedImage->getDependencies());
+    }
+
+    private function relativePaths(string $content) {
+        return preg_replace('/^.*tests\/_resources\/docker\//', 'tests/_resources/docker/', $content);
     }
 }

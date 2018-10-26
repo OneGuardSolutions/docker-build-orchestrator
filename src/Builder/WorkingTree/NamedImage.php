@@ -16,9 +16,32 @@ class NamedImage extends Tag {
      */
     private $dockerfilePath;
 
+    /**
+     * @var string[]|null
+     */
+    private $dependencies;
+
     public function __construct(string $name, string $dockerfilePath) {
         parent::__construct($name);
         $this->dockerfilePath = $dockerfilePath;
+
+        if (is_file($dockerfilePath)) {
+            $source = explode("\n", file_get_contents($dockerfilePath));
+            $this->dependencies = [];
+            foreach ($source as $line) {
+                $line = trim($line);
+                $matches = [];
+                if (preg_match('/^FROM +([^\s]+)( +AS .*)?$/', $line, $matches)) {
+                    $dependency = $matches[1];
+                    if (strpos($dependency, ':') === false) {
+                        $dependency .= ':latest';
+                    }
+                    if (!in_array($dependency, $this->dependencies)) {
+                        $this->dependencies[] = $dependency;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -26,5 +49,12 @@ class NamedImage extends Tag {
      */
     public function getDockerfilePath(): string {
         return $this->dockerfilePath;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDependencies(): ?array {
+        return $this->dependencies;
     }
 }

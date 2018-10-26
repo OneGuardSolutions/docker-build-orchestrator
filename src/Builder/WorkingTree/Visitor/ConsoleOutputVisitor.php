@@ -68,10 +68,30 @@ class ConsoleOutputVisitor extends SimpleVisitor {
         if (!is_file($dockerfilePath)) {
             $dockerfilePath = sprintf('<fg=red>%s</>', $dockerfilePath);
         }
-        $this->output->writeln(sprintf(
-            '     ↳ <info>%s</info> → %s',
-            $namedImage->getName(),
-            $dockerfilePath
-        ));
+        $this->output->writeln(sprintf('     ↳ <info>%s</info> → %s', $namedImage->getName(), $dockerfilePath));
+        if ($namedImage->getDependencies() !== null) {
+            foreach ($namedImage->getDependencies() as $dependency) {
+                $this->output->writeln(sprintf(
+                    '         - depends on: %s%s',
+                    $dependency,
+                    $this->isInternal($namedImage, $dependency) ? '' : ' (external)'
+                ));
+            }
+        }
+    }
+
+    private function isInternal(Tag $source, string $dependency): bool {
+        $repository = $source->getRepository();
+        if ($repository === null) {
+            return false;
+        }
+        [$repositoryName, $tagName] = explode(':', $dependency, 2);
+        if ($repositoryName === $repository->getFullName()) {
+            return $repository->hasTag($tagName);
+        }
+
+        $workingTree = $repository->getWorkingTree();
+
+        return $workingTree !== null && $workingTree->hasTag($dependency);
     }
 }

@@ -100,4 +100,48 @@ class WorkingTreeTest extends TestCase {
         $workingTree->addRepository($repository1);
         $workingTree->addRepository($repository2); // this line should cause an exception
     }
+
+    /**
+     * @covers ::hasTag
+     */
+    public function testHasTag() {
+        $workingTree = new WorkingTree();
+        $repository = new Repository('test');
+        $workingTree->addRepository($repository);
+        $tag = new Alias('latest', '1');
+        $repository->addTag($tag);
+
+        $this->assertTrue($workingTree->hasTag('library/test:latest'));
+    }
+
+    /**
+     * @covers ::hasTag
+     */
+    public function testHasRepositoryNotExists() {
+        $workingTree = new WorkingTree();
+        $repository = new Repository('test');
+        $workingTree->addRepository($repository);
+
+        $this->assertFalse($workingTree->hasTag('library/test:latest'));
+    }
+
+    /**
+     * @covers ::hasTag
+     */
+    public function testHasTagNotExists() {
+        $workingTree = new WorkingTree();
+
+        $this->assertFalse($workingTree->hasTag('library/test:latest'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid tag name format: ''
+     * @covers ::hasTag
+     */
+    public function testHasTagInvalidTagName() {
+        $workingTree = new WorkingTree();
+
+        $this->assertFalse($workingTree->hasTag(''));
+    }
 }

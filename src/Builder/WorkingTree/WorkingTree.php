@@ -72,4 +72,14 @@ class WorkingTree {
 
         return $repository;
     }
+
+    public function hasTag(string $name): bool {
+        $parts = explode(':', $name, 2);
+        if (count($parts) !== 2) {
+            throw new \InvalidArgumentException("Invalid tag name format: '$name'");
+        }
+        [$repositoryName, $tagName] = $parts;
+
+        return $this->hasRepository($repositoryName) && $this->getRepository($repositoryName)->hasTag($tagName);
+    }
 }

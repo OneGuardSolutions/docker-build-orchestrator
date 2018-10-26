@@ -14,6 +14,7 @@ use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Alias;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Repository;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\TestTag;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -193,8 +194,9 @@ class ConsoleOutputVisitorTest extends TestCase {
     /**
      * @covers ::__construct
      * @covers ::visitNamedImage
+     * @covers ::isInternal
      */
-    public function testVisitNamedImage() {
+    public function testVisitNamedImageExternalDependency() {
         $namedImage = new NamedImage(
             '1.0.0',
             realpath(__DIR__ . '/../../../_resources/docker/repositories-1/test/1.2.3/Dockerfile')
@@ -202,7 +204,57 @@ class ConsoleOutputVisitorTest extends TestCase {
         $this->visitor->visitNamedImage($namedImage);
 
         $this->assertEquals(
-            "     ↳ \e[32m1.0.0\e[39m → tests/_resources/docker/repositories-1/test/1.2.3/Dockerfile\n",
+            "     ↳ \e[32m1.0.0\e[39m → tests/_resources/docker/repositories-1/test/1.2.3/Dockerfile\n         - depends on: busybox:latest (external)\n",
+            $this->relativePaths($this->output->fetch())
+        );
+    }
+
+    /**
+     * @covers ::__construct
+     * @covers ::visitNamedImage
+     * @covers ::isInternal
+     */
+    public function testVisitNamedImageExternalDependencyWithWorkingTree() {
+        $namedImage = new NamedImage(
+            '1.0.0',
+            realpath(__DIR__ . '/../../../_resources/docker/repositories-1/test/1.2.3/Dockerfile')
+        );
+        $repository = new Repository('test', 'test', 'test.docker.io');
+        $repository->addTag($namedImage);
+        $workingTree = new WorkingTree();
+        $workingTree->addRepository($repository);
+        $this->visitor->visitNamedImage($namedImage);
+
+        $this->assertEquals(
+            "     ↳ \e[32m1.0.0\e[39m → tests/_resources/docker/repositories-1/test/1.2.3/Dockerfile\n         - depends on: busybox:latest (external)\n",
+            $this->relativePaths($this->output->fetch())
+        );
+    }
+
+    /**
+     * @covers ::__construct
+     * @covers ::visitNamedImage
+     * @covers ::isInternal
+     */
+    public function testVisitNamedImageInternalDependency() {
+        $namedImage1 = new NamedImage(
+            '1.2.3',
+            realpath(__DIR__ . '/../../../_resources/docker/repositories-1/test/1.2.3/Dockerfile')
+        );
+        $namedImage2 = new NamedImage(
+            '1.2.3-dev',
+            realpath(__DIR__ . '/../../../_resources/docker/repositories-1/test/1.2.3-dev/Dockerfile')
+        );
+        $repository = new Repository('test', 'test', 'test.docker.io');
+        $repository->addTag($namedImage1);
+        $repository->addTag($namedImage2);
+        $this->visitor->visitNamedImage($namedImage2);
+
+        $this->assertEquals(
+            "     ↳ \e[32m1.2.3-dev\e[39m → tests/_resources/docker/repositories-1/test/1.2.3-dev/Dockerfile
+         - depends on: busybox:latest (external)
+         - depends on: test.docker.io/test/test:1.2.3
+",
             $this->relativePaths($this->output->fetch())
         );
     }

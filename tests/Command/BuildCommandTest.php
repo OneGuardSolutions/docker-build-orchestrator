@@ -24,13 +24,18 @@ class BuildCommandTest extends TestCase {
      ↳ 1.2 → 1.2.3
      ↳ 1.2-dev → 1.2.3-dev
      ↳ 1.2.3 → tests/_resources/docker/repositories-1/test/1.2.3/Dockerfile
+         - depends on: busybox:latest (external)
      ↳ 1.2.3-dev → tests/_resources/docker/repositories-1/test/1.2.3-dev/Dockerfile
+         - depends on: busybox:latest (external)
+         - depends on: test.docker.io/test/test:1.2.3
      ↳ dev → 1-dev (1.2.3-dev)
      ↳ latest → 1 (1.2.3)
  - test.docker.io/test/test-2
      ↳ 1 → tests/_resources/docker/repositories-1/test-2/1/Dockerfile
+         - depends on: busybox:latest (external)
  - test-2.docker.io/test/test
      ↳ 1 → tests/_resources/docker/repositories-2/test/1/Dockerfile
+         - depends on: busybox:latest (external)
      ↳ 2 → 2.0
      ↳ edge → 2 (unresolved)
      ↳ latest → 1
