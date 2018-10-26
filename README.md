@@ -42,7 +42,7 @@ Following configuration options are available:
 Example:
 ```yaml
 # <root>/php/repository.yaml
-registry: 'docker.example.id'
+registry: 'docker.example.io'
 namespace: 'oneguard'
 aliases:
   latest: '7.2'
