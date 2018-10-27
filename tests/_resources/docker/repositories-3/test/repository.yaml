@@ -1,0 +1,4 @@
+registry: 'test-3.docker.io'
+namespace: test
+aliases:
+  latest: '1'

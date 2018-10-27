@@ -100,6 +100,18 @@ class RepositoryTest extends TestCase {
     }
 
     /**
+     * @covers ::getTags
+     */
+    public function testGetTags() {
+        $repository = new Repository('test');
+        $repository->addTag($tag1 = new TestTag('test-1'));
+        $repository->addTag($tag2 = new TestTag('test-2'));
+        $repository->addTag($tag3 = new TestTag('test-3'));
+
+        $this->assertEquals([$tag1, $tag2, $tag3], $repository->getTags());
+    }
+
+    /**
      * @covers ::getTagNames
      */
     public function testGetTagNames() {

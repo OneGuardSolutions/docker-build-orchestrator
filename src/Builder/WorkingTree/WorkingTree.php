@@ -82,4 +82,33 @@ class WorkingTree {
 
         return $this->hasRepository($repositoryName) && $this->getRepository($repositoryName)->hasTag($tagName);
     }
+
+    public function getTag(string $name): Tag {
+        $parts = explode(':', $name, 2);
+        if (count($parts) !== 2) {
+            throw new \InvalidArgumentException("Invalid tag name format: '$name'");
+        }
+        [$repositoryName, $tagName] = $parts;
+
+        if (!$this->hasRepository($repositoryName)) {
+            throw new \OutOfBoundsException("No tag with name '$name'");
+        }
+
+        return $this->getRepository($repositoryName)->getTag($tagName);
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function getAllTags(): array {
+        return array_merge(
+            [],
+            ...array_map(
+                function (Repository $repository) {
+                    return $repository->getTags();
+                },
+                array_values($this->repositories)
+            )
+        );
+    }
 }

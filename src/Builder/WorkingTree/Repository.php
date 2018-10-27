@@ -88,6 +88,13 @@ class Repository {
     }
 
     /**
+     * @return Tag[]
+     */
+    public function getTags(): array {
+        return array_values($this->tags);
+    }
+
+    /**
      * @return string[]
      */
     public function getTagNames(): array {

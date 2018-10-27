@@ -17,9 +17,9 @@ class NamedImage extends Tag {
     private $dockerfilePath;
 
     /**
-     * @var string[]|null
+     * @var string[]
      */
-    private $dependencies;
+    private $dependencies = [];
 
     public function __construct(string $name, string $dockerfilePath) {
         parent::__construct($name);
@@ -54,7 +54,7 @@ class NamedImage extends Tag {
     /**
      * @return string[]
      */
-    public function getDependencies(): ?array {
+    public function getDependencies(): array {
         return $this->dependencies;
     }
 }

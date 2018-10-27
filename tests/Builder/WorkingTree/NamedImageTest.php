@@ -46,7 +46,7 @@ class NamedImageTest extends TestCase {
     public function testGetDependenciesFileNotExists() {
         $namedImage = new NamedImage('1', '/not/exist');
 
-        $this->assertNull($namedImage->getDependencies());
+        $this->assertEmpty($namedImage->getDependencies());
     }
 
     private function relativePaths(string $content) {

@@ -144,4 +144,58 @@ class WorkingTreeTest extends TestCase {
 
         $this->assertFalse($workingTree->hasTag(''));
     }
+
+    /**
+     * ::@covers ::getTag
+     */
+    public function testGetTag() {
+        $workingTree = new WorkingTree();
+        $repository = new Repository('test');
+        $workingTree->addRepository($repository);
+        $tag = new Alias('latest', '1');
+        $repository->addTag($tag);
+
+        $this->assertSame($tag, $workingTree->getTag('library/test:latest'));
+    }
+
+    /**
+     * @expectedException \OutOfBoundsException
+     * @expectedExceptionMessage No tag with name 'library/not:exists'
+     *
+     * ::@covers ::getTag
+     */
+    public function testGetTagNotExist() {
+        $workingTree = new WorkingTree();
+        $workingTree->getTag('library/not:exists');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid tag name format: 'invalid'
+     *
+     * ::@covers ::getTag
+     */
+    public function testGetTagInvalidName() {
+        $workingTree = new WorkingTree();
+        $workingTree->getTag('invalid');
+    }
+
+    /**
+     * ::@covers ::getAllTags
+     */
+    public function testGetAllTags() {
+        $workingTree = new WorkingTree();
+        $repository = new Repository('test');
+        $workingTree->addRepository($repository);
+        $tag1 = new Alias('latest', '1');
+        $tag2 = new Alias('edge', '2');
+        $repository->addTag($tag1);
+        $repository->addTag($tag2);
+        $repository = new Repository('test-2');
+        $workingTree->addRepository($repository);
+        $tag3 = new Alias('latest', '1');
+        $repository->addTag($tag3);
+
+        $this->assertEquals([$tag1, $tag2, $tag3], $workingTree->getAllTags());
+    }
 }
