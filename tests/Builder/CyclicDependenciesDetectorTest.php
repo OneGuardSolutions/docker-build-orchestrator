@@ -8,13 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree;
+namespace OneGuard\DockerBuildOrchestrator\Builder;
 
-use OneGuard\DockerBuildOrchestrator\Builder\Builder;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\CyclicDependenciesDetector
+ * @coversDefaultClass \OneGuard\DockerBuildOrchestrator\Builder\CyclicDependenciesDetector
  */
 class CyclicDependenciesDetectorTest extends TestCase {
     /**
@@ -24,7 +24,6 @@ class CyclicDependenciesDetectorTest extends TestCase {
 
     protected function setUp() {
         $this->detector = new CyclicDependenciesDetector();
-        $this->workingTree = new WorkingTree();
     }
 
     /**
@@ -33,8 +32,8 @@ class CyclicDependenciesDetectorTest extends TestCase {
      */
     public function testDetect() {
         $workingTree = (new Builder())->buildAll([
-            __DIR__ . '/../../_resources/docker/repositories-1/',
-            __DIR__ . '/../../_resources/docker/repositories-3/'
+            __DIR__ . '/../_resources/docker/repositories-1/',
+            __DIR__ . '/../_resources/docker/repositories-3/'
         ]);
         $result = $this->detector->detect($workingTree);
 
@@ -58,7 +57,7 @@ class CyclicDependenciesDetectorTest extends TestCase {
      */
     public function testDetectWithCyclicDependency() {
         $workingTree = (new Builder())->buildAll([
-            __DIR__ . '/../../_resources/docker/repositories-4/'
+            __DIR__ . '/../_resources/docker/repositories-4/'
         ]);
         $result = $this->detector->detect($workingTree);
 

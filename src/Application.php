@@ -12,7 +12,7 @@ namespace OneGuard\DockerBuildOrchestrator;
 
 use Deployer\Component\PharUpdate\Console\Command;
 use Deployer\Component\PharUpdate\Console\Helper;
-use OneGuard\DockerBuildOrchestrator\Command\BuildCommand;
+use OneGuard\DockerBuildOrchestrator\Command\CheckCommand;
 use OneGuard\DockerBuildOrchestrator\Utils\VersionUtils;
 
 class Application extends \Symfony\Component\Console\Application {
@@ -21,7 +21,7 @@ class Application extends \Symfony\Component\Console\Application {
 
         $this->getHelperSet()->set(new Helper());
 
-        $this->add(new BuildCommand());
+        $this->add(new CheckCommand());
 
         $updateCommand = new Command('update');
         $updateCommand->setManifestUri('@manifest_url@');

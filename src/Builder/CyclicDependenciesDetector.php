@@ -8,7 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree;
+namespace OneGuard\DockerBuildOrchestrator\Builder;
+
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Alias;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 
 class CyclicDependenciesDetector {
     /**
