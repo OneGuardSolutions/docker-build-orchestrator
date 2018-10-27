@@ -10,10 +10,12 @@
 
 namespace OneGuard\DockerBuildOrchestrator\Command;
 
+use OneGuard\DockerBuildOrchestrator\Builder\BrokenAliasesDetector;
 use OneGuard\DockerBuildOrchestrator\Builder\Builder;
 use OneGuard\DockerBuildOrchestrator\Builder\CyclicDependenciesDetector;
 use OneGuard\DockerBuildOrchestrator\Builder\NoDockerfileFoundException;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor\ConsoleOutputVisitor;
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -49,6 +51,7 @@ class CheckCommand extends Command {
             $workingTree = $builder->buildAll($dirs);
         } catch (NoDockerfileFoundException $e) {
             $io->writeln('<comment>No Docker images were found.</comment>');
+
             return 0;
         }
 
@@ -56,27 +59,56 @@ class CheckCommand extends Command {
         $visitor->visit($workingTree);
         $io->writeln('');
 
-        $detector = new CyclicDependenciesDetector();
-        $cyclicDependencies = $detector->detect($workingTree);
-        if (!empty($cyclicDependencies)) {
-            $io->error('Cyclic dependencies detected');
-            $i = 1;
-            foreach ($cyclicDependencies as $cyclicDependency) {
-                $first = $cyclicDependency[0];
-                $io->write(sprintf(' %s) ', $i++));
-                foreach ($cyclicDependency as $name) {
-                    $io->write(sprintf("%s\n\t→ ", $name));
-                }
-                $io->writeln($first);
-                $io->writeln('');
-            }
-
+        if ($this->checkForBrokenAliases($io, $workingTree)) {
             return 1;
+        }
+        if ($this->checkForCyclicDependencies($io, $workingTree)) {
+            return 2;
         }
 
         $repositoryCount = count($workingTree->getRepositoryNames());
         $io->success(($repositoryCount === 1 ? 'Repository is' : 'Repositories are') . ' healthy.');
 
         return 0;
+    }
+
+    private function checkForBrokenAliases(SymfonyStyle $io, WorkingTree $workingTree): bool {
+        $brokenAliasesDetector = new BrokenAliasesDetector();
+        $brokenAliases = $brokenAliasesDetector->detect($workingTree);
+        if (!empty($brokenAliases)) {
+            $io->error('Broken aliases detected');
+            $i = 1;
+            foreach ($brokenAliases as $brokenAlias) {
+                $io->writeln(sprintf(
+                    " %s) %s → <fg=red>%s</>",
+                    $i++,
+                    $brokenAlias->getFullName(),
+                    $brokenAlias->getReference()
+                ));
+            }
+            $io->writeln('');
+        }
+
+        return !empty($brokenAliases);
+    }
+
+    private function checkForCyclicDependencies(SymfonyStyle $io, WorkingTree $workingTree): bool {
+        $cyclicDependenciesDetector = new CyclicDependenciesDetector();
+        $cyclicDependencies = $cyclicDependenciesDetector->detect($workingTree);
+        if (!empty($cyclicDependencies)) {
+            $io->error('Cyclic dependencies detected');
+            $i = 1;
+            foreach ($cyclicDependencies as $brokenAlias) {
+                $first = $brokenAlias[0];
+                $io->write(sprintf(' %s) ', $i++));
+                foreach ($brokenAlias as $name) {
+                    $io->write(sprintf("%s\n      → ", $name));
+                }
+                $io->writeln($first);
+                $io->writeln('');
+            }
+        }
+
+        return !empty($cyclicDependencies);
     }
 }

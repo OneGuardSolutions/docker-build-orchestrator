@@ -48,13 +48,25 @@ class CheckCommandTest extends TestCase {
 
  [ERROR] Cyclic dependencies detected                                           \n
  1) test-4.docker.io/test/test:a
-	→ test-4.docker.io/test/test:b
-	→ test-4.docker.io/test/test:a
+      → test-4.docker.io/test/test:b
+      → test-4.docker.io/test/test:a
 
  2) test-4.docker.io/test/test:a
-	→ test-4.docker.io/test/test:b
-	→ test-4.docker.io/test/test:c
-	→ test-4.docker.io/test/test:a
+      → test-4.docker.io/test/test:b
+      → test-4.docker.io/test/test:c
+      → test-4.docker.io/test/test:a
+
+";
+
+    private const MSG_ALIASES_ERROR = " - test-2.docker.io/test/test
+     ↳ 1 → tests/_resources/docker/repositories-2/test/1/Dockerfile
+         - depends on: busybox:latest (external)
+     ↳ 2 → 2.0
+     ↳ edge → 2 (unresolved)
+     ↳ latest → 1
+
+ [ERROR] Broken aliases detected                                                \n
+ 1) test-2.docker.io/test/test:2 → 2.0
 
 ";
 
@@ -82,6 +94,7 @@ class CheckCommandTest extends TestCase {
         $output = $commandTester->getDisplay();
 
         $this->assertEquals(self::MSG, $this->relativePaths($output));
+        $this->assertEquals(0, $commandTester->getStatusCode());
     }
 
     /**
@@ -90,23 +103,39 @@ class CheckCommandTest extends TestCase {
     public function testExecuteCwdWithNoRepositories() {
         $command = new CheckCommand();
         $commandTester = new CommandTester($command);
-        $commandTester->execute(['--directory' => [__DIR__ . '/../_resources/docker/repositories-4']]);
-
-        $this->assertEquals(self::MSG_CYCLIC_ERROR, $this->relativePaths($commandTester->getDisplay()));
-    }
-
-    /**
-     * @covers ::execute
-     */
-    public function testExecuteCyclicDependencies() {
-        $command = new CheckCommand();
-        $commandTester = new CommandTester($command);
         $commandTester->execute([]);
 
         $this->assertEquals(
             "No root directories specified, adding current working directory.\nNo Docker images were found.\n",
             $commandTester->getDisplay()
         );
+        $this->assertEquals(0, $commandTester->getStatusCode());
+    }
+
+    /**
+     * @covers ::execute
+     * @covers ::checkForBrokenAliases
+     */
+    public function testExecuteBrokenAliases() {
+        $command = new CheckCommand();
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(['--directory' => [__DIR__ . '/../_resources/docker/repositories-2']]);
+
+        $this->assertEquals(self::MSG_ALIASES_ERROR, $this->relativePaths($commandTester->getDisplay()));
+        $this->assertEquals(1, $commandTester->getStatusCode());
+    }
+
+    /**
+     * @covers ::execute
+     * @covers ::checkForCyclicDependencies
+     */
+    public function testExecuteCyclicDependencies() {
+        $command = new CheckCommand();
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(['--directory' => [__DIR__ . '/../_resources/docker/repositories-4']]);
+
+        $this->assertEquals(self::MSG_CYCLIC_ERROR, $this->relativePaths($commandTester->getDisplay()));
+        $this->assertEquals(2, $commandTester->getStatusCode());
     }
 
     private function relativePaths(string $content) {
