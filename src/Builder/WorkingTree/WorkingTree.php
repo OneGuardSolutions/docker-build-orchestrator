@@ -45,7 +45,8 @@ class WorkingTree {
      * if a {@link Repository} with the same name is not registered yet.
      *
      * @param Repository $repository
-     * @throws \InvalidArgumentException if a {@link Repository} with same name is already registered in the {@link WorkingTree}
+     * @throws \InvalidArgumentException
+     *              if a {@link Repository} with same name is already registered in the {@link WorkingTree}
      */
     public function addRepository(Repository $repository): void {
         $name = $repository->getFullName();
@@ -95,6 +96,15 @@ class WorkingTree {
         }
 
         return $this->getRepository($repositoryName)->getTag($tagName);
+    }
+
+    public function resolveTag(string $name): ?Tag {
+        $tag = $this->getTag($name);
+        if ($tag instanceof Alias) {
+            $tag = $tag->resolve();
+        }
+
+        return $tag;
     }
 
     /**

@@ -106,6 +106,7 @@ class ConsoleOutputVisitorTest extends TestCase {
 
     /**
      * @covers ::visitAlias
+     * @covers ::getReferenceForNonBrokenAlias
      */
     public function testVisitAliasToNamedImage() {
         $alias = new Alias('latest', '1');
@@ -126,6 +127,7 @@ class ConsoleOutputVisitorTest extends TestCase {
 
     /**
      * @covers ::visitAlias
+     * @covers ::getReferenceForNonBrokenAlias
      */
     public function testVisitAliasToAlias() {
         $alias1 = new Alias('latest', '1');
@@ -148,6 +150,7 @@ class ConsoleOutputVisitorTest extends TestCase {
 
     /**
      * @covers ::visitAlias
+     * @covers ::getReferenceForNonBrokenAlias
      */
     public function testVisitAliasToAliasWithUnresolvedReference() {
         $alias1 = new Alias('latest', '1');
@@ -165,6 +168,7 @@ class ConsoleOutputVisitorTest extends TestCase {
 
     /**
      * @covers ::visitAlias
+     * @covers ::getReferenceForNonBrokenAlias
      */
     public function testVisitAliasUnresolvedReference() {
         $alias = new Alias('latest', '1');
@@ -180,6 +184,7 @@ class ConsoleOutputVisitorTest extends TestCase {
 
     /**
      * @covers ::visitAlias
+     * @covers ::getReferenceForNonBrokenAlias
      */
     public function testVisitAliasNoRepository() {
         $alias = new Alias('latest', '1');

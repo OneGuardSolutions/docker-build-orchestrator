@@ -9,7 +9,8 @@
 Simple orchestrator for building docker images
 
 **Warning:** This version is **in early stage of development**.
-For working version see [v1](https://github.com/OneGuardSolutions/docker-build-orchestrator/tree/v1) branch.
+For working version see
+[v1](https://github.com/OneGuardSolutions/docker-build-orchestrator/tree/v1) branch.
 
 ## Features
 
@@ -26,12 +27,14 @@ and its public key, and make it executable.
 ## Repository structure
 
 Each `Dockerfile` resides in a directory structure in format `<root>/<repository>/<tag>/Dockerfile`.
-All repositories *may have* configuration file in `<repository>/repository.yaml`, or `<repository>/repository.yml`.
-If both `repository.yaml` and `repository.yml` are present `repository.yaml` has priority.
+All repositories *may have* configuration file in `<repository>/repository.yaml`,
+or `<repository>/repository.yml`. If both `repository.yaml` and `repository.yml`
+are present `repository.yaml` has priority.
 
 ## Repository configuration
 
 Following configuration options are available:
+
 - *registry* `optional` - image registry, in form of `host[:port]`;
     if nor provided, the default Docker registry will be used
 - *namespace* `optional` - image namespace (owner username);
@@ -40,6 +43,7 @@ Following configuration options are available:
     and values as named image (tag) reference
 
 Example:
+
 ```yaml
 # <root>/php/repository.yaml
 registry: 'docker.example.io'

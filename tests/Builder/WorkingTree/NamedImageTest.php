@@ -32,6 +32,8 @@ class NamedImageTest extends TestCase {
     /**
      * @covers ::__construct
      * @covers ::getDependencies
+     * @covers ::detectDependencies
+     * @covers ::extractDependencyFromLine
      */
     public function testGetDependencies() {
         $namedImage = new NamedImage('1', __DIR__ . '/../../_resources/docker/repositories-1/test/1.2.3-dev/Dockerfile');
@@ -42,6 +44,8 @@ class NamedImageTest extends TestCase {
     /**
      * @covers ::__construct
      * @covers ::getDependencies
+     * @covers ::detectDependencies
+     * @covers ::extractDependencyFromLine
      */
     public function testGetDependenciesFileNotExists() {
         $namedImage = new NamedImage('1', '/not/exist');

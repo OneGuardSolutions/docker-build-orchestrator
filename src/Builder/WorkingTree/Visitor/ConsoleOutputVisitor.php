@@ -33,7 +33,7 @@ class ConsoleOutputVisitor extends SimpleVisitor {
     public function visitTag(Tag $tag) {
         if ($tag instanceof Alias) {
             $this->visitAlias($tag);
-        } else if ($tag instanceof NamedImage) {
+        } elseif ($tag instanceof NamedImage) {
             $this->visitNamedImage($tag);
         } else {
             $this->output->writeln(sprintf("     ↳ %s", $tag->getName()));
@@ -42,23 +42,10 @@ class ConsoleOutputVisitor extends SimpleVisitor {
 
     public function visitAlias(Alias $alias) {
         $reference = $alias->getReference();
-        $repository = $alias->getRepository();
-        if ($repository === null || !$repository->hasTag($alias->getReference())) {
+        if ($alias->isBroken()) {
             $reference = sprintf('<fg=red>%s</>', $reference);
         } else {
-            $tag = $repository->getTag($reference);
-            if ($tag instanceof NamedImage) {
-                $reference = sprintf('<info>%s</info>', $reference);
-            } else if ($tag instanceof Alias) {
-                $resolvedReference = null;
-                $resolved = $tag->resolve();
-                if ($resolved === null) {
-                    $resolvedReference = '<fg=red>unresolved</>';
-                } else {
-                    $resolvedReference = sprintf('<info>%s</info>', $resolved->getName());
-                }
-                $reference = sprintf('<fg=cyan>%s</> (%s)', $reference, $resolvedReference);
-            }
+            $reference = $this->getReferenceForNonBrokenAlias($alias);
         }
         $this->output->writeln(sprintf('     ↳ <fg=cyan>%s</> → %s', $alias->getName(), $reference));
     }
@@ -78,6 +65,22 @@ class ConsoleOutputVisitor extends SimpleVisitor {
                 ));
             }
         }
+    }
+
+    private function getReferenceForNonBrokenAlias(Alias $alias) {
+        $repository = $alias->getRepository();
+        $tag = $repository->getTag($alias->getReference());
+        if (!($tag instanceof Alias)) {
+            return sprintf('<info>%s</info>', $alias->getReference());
+        }
+
+        $resolved = $tag->resolve();
+
+        return sprintf(
+            '<fg=cyan>%s</> (%s)',
+            $alias->getReference(),
+            $resolved === null ? '<fg=red>unresolved</>' : sprintf('<info>%s</info>', $resolved->getName())
+        );
     }
 
     private function isInternal(Tag $source, string $dependency): bool {

@@ -27,11 +27,7 @@ class BrokenAliasesDetector {
         $brokenAliases = array_filter(
             $workingTree->getAllTags(),
             function (Tag $tag) use ($workingTree) {
-                if (!($tag instanceof Alias)) {
-                    return false;
-                }
-
-                return !$tag->getRepository()->hasTag($tag->getReference());
+                return $tag instanceof Alias && $tag->isBroken();
             }
         );
         sort($brokenAliases);

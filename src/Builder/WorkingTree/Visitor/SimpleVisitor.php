@@ -42,9 +42,15 @@ abstract class SimpleVisitor implements VisitorInterface {
 
     public abstract function visitTag(Tag $tag);
 
-    protected function beforeWorkingTree(WorkingTree $workingTree) {}
-    protected function afterWorkingTree(WorkingTree $workingTree) {}
+    protected function beforeWorkingTree(WorkingTree $workingTree) {
+    }
 
-    protected function beforeRepository(Repository $repository) {}
-    protected function afterRepository(Repository $repository) {}
+    protected function afterWorkingTree(WorkingTree $workingTree) {
+    }
+
+    protected function beforeRepository(Repository $repository) {
+    }
+
+    protected function afterRepository(Repository $repository) {
+    }
 }

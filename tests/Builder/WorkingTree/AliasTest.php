@@ -65,4 +65,35 @@ class AliasTest extends TestCase {
 
         $this->assertNull($alias->resolve());
     }
+
+    /**
+     * @covers ::isBroken
+     */
+    public function testIsBrokenNoRepository() {
+        $alias = new Alias('latest', '1');
+
+        $this->assertTrue($alias->isBroken());
+    }
+
+    /**
+     * @covers ::isBroken
+     */
+    public function testIsBrokenBrokenReference() {
+        $alias = new Alias('latest', '1');
+        $alias->setRepository(new Repository('test'));
+
+        $this->assertTrue($alias->isBroken());
+    }
+
+    /**
+     * @covers ::isBroken
+     */
+    public function testIsBrokenCorrectReference() {
+        $repository = new Repository('test');
+        $alias = new Alias('latest', '1');
+        $repository->addTag($alias);
+        $repository->addTag(new Alias('1', '1.0'));
+
+        $this->assertFalse($alias->isBroken());
+    }
 }

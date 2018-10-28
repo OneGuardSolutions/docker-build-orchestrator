@@ -33,7 +33,7 @@ class Builder {
             function ($rootDir) {
                 if ($rootDir instanceof \SplFileInfo) {
                     $rootDir = $rootDir->getPathname();
-                } else if (!is_string($rootDir)) {
+                } elseif (!is_string($rootDir)) {
                     throw new \InvalidArgumentException(
                         'Expected string or SplFileInfo, got ' . gettype($rootDir)
                     );
@@ -113,7 +113,7 @@ class Builder {
         $configFile = null;
         if (is_file($repositoryDirectory . '/repository.yaml')) {
             $configFile = $repositoryDirectory . '/repository.yaml';
-        } else if (is_file($repositoryDirectory . '/repository.yml')) {
+        } elseif (is_file($repositoryDirectory . '/repository.yml')) {
             $configFile = $repositoryDirectory . '/repository.yml';
         }
 

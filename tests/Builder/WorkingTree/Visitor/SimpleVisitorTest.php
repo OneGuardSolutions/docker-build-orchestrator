@@ -49,6 +49,18 @@ class SimpleVisitorTest extends TestCase {
     }
 
     /**
+     * @covers ::visit
+     * @covers ::beforeWorkingTree
+     * @covers ::afterWorkingTree
+     */
+    public function testVisitEmpty() {
+        $visitor = new TestSimpleVisitor();
+        $visitor->visit(new WorkingTree());
+
+        $this->assertInstanceOf(VisitorInterface::class, $visitor);
+    }
+
+    /**
      * @covers ::visitRepository
      */
     public function testVisitRepository() {
@@ -74,5 +86,17 @@ class SimpleVisitorTest extends TestCase {
             ->with($this->equalTo($repository));
 
         $mockVisitor->visitRepository($repository);
+    }
+
+    /**
+     * @covers ::visitRepository
+     * @covers ::beforeRepository
+     * @covers ::afterRepository
+     */
+    public function testVisitRepositoryEmpty() {
+        $visitor = new TestSimpleVisitor();
+        $visitor->visitRepository(new Repository('test'));
+
+        $this->assertInstanceOf(VisitorInterface::class, $visitor);
     }
 }

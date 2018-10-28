@@ -28,6 +28,8 @@ class CyclicDependenciesDetectorTest extends TestCase {
 
     /**
      * @covers ::detect
+     * @covers ::getTags
+     * @covers ::detectCyclicDependency
      * @covers ::getRelevantDependencies
      */
     public function testDetect() {
@@ -42,6 +44,8 @@ class CyclicDependenciesDetectorTest extends TestCase {
 
     /**
      * @covers ::detect
+     * @covers ::getTags
+     * @covers ::detectCyclicDependency
      */
     public function testDetectEmpty() {
         $workingTree = new WorkingTree();
@@ -52,6 +56,8 @@ class CyclicDependenciesDetectorTest extends TestCase {
 
     /**
      * @covers ::detect
+     * @covers ::getTags
+     * @covers ::detectCyclicDependency
      * @covers ::getRelevantDependencies
      * @covers ::constructCycleFrom
      */

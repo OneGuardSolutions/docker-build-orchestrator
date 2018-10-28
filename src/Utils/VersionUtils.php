@@ -16,12 +16,12 @@ class VersionUtils {
      * @return string
      */
     public static function normalize(string $version) {
-        $i = strpos($version, '-');
-        if ($i === false) {
+        $index = strpos($version, '-');
+        if ($index === false) {
             return $version;
         }
 
-        return substr($version, 0, $i + 1)
-            . preg_replace('/[^a-zA-Z0-9]/', '.', substr($version, $i + 1));
+        return substr($version, 0, $index + 1)
+            . preg_replace('/[^a-zA-Z0-9]/', '.', substr($version, $index + 1));
     }
 }

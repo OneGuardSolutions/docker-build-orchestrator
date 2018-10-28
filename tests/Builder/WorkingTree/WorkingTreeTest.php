@@ -198,4 +198,56 @@ class WorkingTreeTest extends TestCase {
 
         $this->assertEquals([$tag1, $tag2, $tag3], $workingTree->getAllTags());
     }
+
+    /**
+     * @covers ::resolveTag
+     */
+    public function testResolveTagAlias() {
+        $workingTree = new WorkingTree();
+        $repository = new Repository('test');
+        $workingTree->addRepository($repository);
+        $tag1 = new Alias('latest', '1');
+        $tag2 = new TestTag('1');
+        $repository->addTag($tag1);
+        $repository->addTag($tag2);
+
+        $this->assertSame($tag2, $workingTree->resolveTag('library/test:latest'));
+    }
+
+    /**
+     * @covers ::resolveTag
+     */
+    public function testResolveTagNotAlias() {
+        $workingTree = new WorkingTree();
+        $repository = new Repository('test');
+        $workingTree->addRepository($repository);
+        $tag = new TestTag('1');
+        $repository->addTag($tag);
+
+        $this->assertSame($tag, $workingTree->resolveTag('library/test:1'));
+    }
+
+    /**
+     * @covers ::resolveTag
+     */
+    public function testResolveTagBroken() {
+        $workingTree = new WorkingTree();
+        $repository = new Repository('test');
+        $workingTree->addRepository($repository);
+        $tag = new Alias('latest', '1');
+        $repository->addTag($tag);
+
+        $this->assertNull($workingTree->resolveTag('library/test:latest'));
+    }
+
+    /**
+     * @expectedException \OutOfBoundsException
+     * @expectedExceptionMessage No tag with name 'test/not:exists'
+     * @covers ::resolveTag
+     */
+    public function testResolveTagNotExists() {
+        $workingTree = new WorkingTree();
+
+        $this->assertNull($workingTree->resolveTag('test/not:exists'));
+    }
 }

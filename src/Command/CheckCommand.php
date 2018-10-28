@@ -37,10 +37,10 @@ class CheckCommand extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $io = new SymfonyStyle($input, $output);
+        $style = new SymfonyStyle($input, $output);
         $dirs = $input->getOption('directory');
         if (empty($dirs)) {
-            $io->getErrorStyle()->writeln(
+            $style->getErrorStyle()->writeln(
                 '<comment>No root directories specified, adding current working directory.</comment>'
             );
             $dirs[] = getcwd();
@@ -50,62 +50,62 @@ class CheckCommand extends Command {
         try {
             $workingTree = $builder->buildAll($dirs);
         } catch (NoDockerfileFoundException $e) {
-            $io->writeln('<comment>No Docker images were found.</comment>');
+            $style->writeln('<comment>No Docker images were found.</comment>');
 
             return 0;
         }
 
-        $visitor = new ConsoleOutputVisitor($io);
+        $visitor = new ConsoleOutputVisitor($style);
         $visitor->visit($workingTree);
-        $io->writeln('');
+        $style->writeln('');
 
-        if ($this->checkForBrokenAliases($io, $workingTree)) {
+        if ($this->checkForBrokenAliases($style, $workingTree)) {
             return 1;
         }
-        if ($this->checkForCyclicDependencies($io, $workingTree)) {
+        if ($this->checkForCyclicDependencies($style, $workingTree)) {
             return 2;
         }
 
         $repositoryCount = count($workingTree->getRepositoryNames());
-        $io->success(($repositoryCount === 1 ? 'Repository is' : 'Repositories are') . ' healthy.');
+        $style->success(($repositoryCount === 1 ? 'Repository is' : 'Repositories are') . ' healthy.');
 
         return 0;
     }
 
-    private function checkForBrokenAliases(SymfonyStyle $io, WorkingTree $workingTree): bool {
-        $brokenAliasesDetector = new BrokenAliasesDetector();
-        $brokenAliases = $brokenAliasesDetector->detect($workingTree);
+    private function checkForBrokenAliases(SymfonyStyle $style, WorkingTree $workingTree): bool {
+        $detector = new BrokenAliasesDetector();
+        $brokenAliases = $detector->detect($workingTree);
         if (!empty($brokenAliases)) {
-            $io->error('Broken aliases detected');
-            $i = 1;
+            $style->error('Broken aliases detected');
+            $index = 1;
             foreach ($brokenAliases as $brokenAlias) {
-                $io->writeln(sprintf(
+                $style->writeln(sprintf(
                     " %s) %s → <fg=red>%s</>",
-                    $i++,
+                    $index++,
                     $brokenAlias->getFullName(),
                     $brokenAlias->getReference()
                 ));
             }
-            $io->writeln('');
+            $style->writeln('');
         }
 
         return !empty($brokenAliases);
     }
 
-    private function checkForCyclicDependencies(SymfonyStyle $io, WorkingTree $workingTree): bool {
-        $cyclicDependenciesDetector = new CyclicDependenciesDetector();
-        $cyclicDependencies = $cyclicDependenciesDetector->detect($workingTree);
+    private function checkForCyclicDependencies(SymfonyStyle $style, WorkingTree $workingTree): bool {
+        $detector = new CyclicDependenciesDetector();
+        $cyclicDependencies = $detector->detect($workingTree);
         if (!empty($cyclicDependencies)) {
-            $io->error('Cyclic dependencies detected');
-            $i = 1;
+            $style->error('Cyclic dependencies detected');
+            $index = 1;
             foreach ($cyclicDependencies as $brokenAlias) {
                 $first = $brokenAlias[0];
-                $io->write(sprintf(' %s) ', $i++));
+                $style->write(sprintf(' %s) ', $index++));
                 foreach ($brokenAlias as $name) {
-                    $io->write(sprintf("%s\n      → ", $name));
+                    $style->write(sprintf("%s\n      → ", $name));
                 }
-                $io->writeln($first);
-                $io->writeln('');
+                $style->writeln($first);
+                $style->writeln('');
             }
         }
 

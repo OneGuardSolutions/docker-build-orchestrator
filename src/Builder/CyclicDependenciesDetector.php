@@ -10,7 +10,6 @@
 
 namespace OneGuard\DockerBuildOrchestrator\Builder;
 
-use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Alias;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
@@ -27,46 +26,54 @@ class CyclicDependenciesDetector {
     public function detect(WorkingTree $workingTree): array {
         $cycles = [];
 
+        $tags = $this->getTags($workingTree);
+        $visited = [];
+        $stack = [];
+
+        while (!empty($tags)) {
+            $this->detectCyclicDependency($workingTree, $tags, $visited, $stack, $cycles);
+        }
+
+        return $cycles;
+    }
+
+    private function detectCyclicDependency(WorkingTree $workingTree, array &$tags, array &$visited, array &$stack, array &$cycles) {
+        $current = array_shift($tags);
+        if ($current === '-') {
+            array_shift($stack);
+            return;
+        }
+
+        if (in_array($current, $stack)) {
+            $cycles[] = $this->constructCycleFrom($stack, $current);
+            return;
+        }
+        if (in_array($current, $visited)) {
+            return;
+        }
+        $visited[] = $current;
+
+        $dependencies = $this->getRelevantDependencies($workingTree, $current);
+        if (!empty($dependencies)) {
+            $stack[] = $current;
+            array_unshift($tags, '-');
+            foreach ($dependencies as $dependency) {
+                array_unshift($tags, $dependency);
+            }
+        }
+    }
+
+    private function getTags(WorkingTree $workingTree): array {
         $tags = array_filter($workingTree->getAllTags(), function (Tag $tag) {
             return $tag instanceof NamedImage;
         });
-        $tags = array_map(
+
+        return array_map(
             function (Tag $tag) {
                 return $tag->getFullName();
             },
             $tags
         );
-        $visited = [];
-        $stack = [];
-
-        while (!empty($tags)) {
-            $current = array_shift($tags);
-            if ($current === '-') {
-                array_shift($stack);
-                continue;
-            }
-
-            if (in_array($current, $stack)) {
-                $cycles[] = $this->constructCycleFrom($stack, $current);
-                continue;
-            }
-            if (in_array($current, $visited)) {
-                continue;
-            }
-            $visited[] = $current;
-
-            $dependencies = $this->getRelevantDependencies($workingTree, $current);
-            if (!empty($dependencies)) {
-                $stack[] = $current;
-                array_unshift($tags, '-');
-                foreach ($dependencies as $dependency) {
-                    array_unshift($tags, $dependency);
-                }
-            }
-            unset($dependencies);
-        }
-
-        return $cycles;
     }
 
     /**
@@ -84,10 +91,7 @@ class CyclicDependenciesDetector {
             if (!$workingTree->hasTag($dependency)) {
                 continue;
             }
-            $dependencyTag = $workingTree->getTag($dependency);
-            if ($dependencyTag instanceof Alias) {
-                $dependencyTag = $dependencyTag->resolve();
-            }
+            $dependencyTag = $workingTree->resolveTag($dependency);
             if ($dependencyTag !== null) {
                 $result[] = $dependencyTag->getFullName();
             }

@@ -8,7 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace OneGuard\DockerBuildOrchestrator\Builder;
+namespace OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Visitor;
 
-class NoDockerfileFoundException extends \RuntimeException {
+use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
+
+class TestSimpleVisitor extends SimpleVisitor {
+    public function visitTag(Tag $tag) {
+    }
 }

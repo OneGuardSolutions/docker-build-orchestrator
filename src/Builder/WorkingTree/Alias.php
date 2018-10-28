@@ -31,12 +31,13 @@ class Alias extends Tag {
     public function resolve(): ?Tag {
         $tag = $this;
         while ($tag instanceof Alias) {
-            $repository = $tag->getRepository();
-            $tag = $repository === null ?
-                null :
-                $repository->hasTag($tag->getReference()) ? $repository->getTag($tag->getReference()) : null;
+            $tag = $tag->isBroken() ? null : $tag->getRepository()->getTag($tag->getReference());
         }
 
         return $tag;
+    }
+
+    public function isBroken(): bool {
+        return $this->repository === null || !$this->repository->hasTag($this->reference);
     }
 }

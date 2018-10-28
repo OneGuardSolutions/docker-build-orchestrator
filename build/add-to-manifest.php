@@ -10,12 +10,12 @@
  *
  */
 
-function compareEntries(array $a, array $b) {
-    if ($a['name'] !== $b['name']) {
-        return $a['name'] < $b['name'] ? -2 : 2;
+function compareEntries(array $left, array $right) {
+    if ($left['name'] !== $right['name']) {
+        return $left['name'] < $right['name'] ? -2 : 2;
     }
 
-    return $a['version'] === $b['version'] ? 0 : ($a['version'] < $b['version'] ? -1 : 1);
+    return $left['version'] === $right['version'] ? 0 : ($left['version'] < $right['version'] ? -1 : 1);
 }
 
 if (count($argv) !== 6 && count($argv) !== 7) {
