@@ -44,7 +44,7 @@ class NamedImage extends Tag {
     }
 
     private function detectDependencies(string $dockerfilePath): void {
-        $source = explode("\n", file_get_contents($dockerfilePath));
+        $source = file($dockerfilePath);
         $this->dependencies = [];
         foreach ($source as $line) {
             $dependency = $this->extractDependencyFromLine(trim($line));
