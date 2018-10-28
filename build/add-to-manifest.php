@@ -10,12 +10,14 @@
  *
  */
 
+const VERSION_KEY = 'version';
+
 function compareEntries(array $left, array $right) {
     if ($left['name'] !== $right['name']) {
         return $left['name'] < $right['name'] ? -2 : 2;
     }
 
-    return $left['version'] === $right['version'] ? 0 : ($left['version'] < $right['version'] ? -1 : 1);
+    return $left[VERSION_KEY] === $right[VERSION_KEY] ? 0 : ($left[VERSION_KEY] < $right[VERSION_KEY] ? -1 : 1);
 }
 
 if (count($argv) !== 6 && count($argv) !== 7) {
@@ -34,7 +36,7 @@ $entry = [
     'sha1' => $sha1,
     'url' => $url,
     'publicKey' => $publicKey,
-    'version' => $version
+    VERSION_KEY => $version
 ];
 
 /** @noinspection PhpComposerExtensionStubsInspection */
@@ -42,7 +44,7 @@ $manifest = file_exists($manifestFile) ? json_decode(file_get_contents($manifest
 $manifest = array_filter(
     $manifest,
     function ($e) use ($version) {
-        return is_array($e) && !empty($e['version']) && $e['version'] !== $version;
+        return is_array($e) && !empty($e[VERSION_KEY]) && $e[VERSION_KEY] !== $version;
     }
 );
 $manifest[] = $entry;

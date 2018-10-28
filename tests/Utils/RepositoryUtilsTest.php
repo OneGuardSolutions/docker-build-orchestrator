@@ -23,6 +23,7 @@ class RepositoryUtilsTest extends TestCase {
      *
      * @dataProvider fullNameProducer
      * @covers ::fullNameComparator
+     * @covers ::nameWithoutRegistryComparator
      */
     public function testFullNameComparator(string $name1, string $name2, int $result) {
         $this->assertEquals($result, RepositoryUtils::fullNameComparator($name1, $name2));

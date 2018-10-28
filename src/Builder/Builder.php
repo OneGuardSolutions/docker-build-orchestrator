@@ -20,6 +20,10 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 class Builder {
+    private const ALIASES_KEY = 'aliases';
+    private const NAMESPACE_KEY = 'namespace';
+    private const REGISTRY_KEY = 'registry';
+
     /**
      * @param string[]|\SplFileInfo[] $rootDirs
      * @return WorkingTree
@@ -84,14 +88,18 @@ class Builder {
             $configuration = $this->parseConfigFile($repositoryDirectory);
             $repositoryFullName = RepositoryUtils::generateFullName(
                 $repositoryName,
-                $configuration['namespace'],
-                $configuration['registry']
+                $configuration[self::NAMESPACE_KEY],
+                $configuration[self::REGISTRY_KEY]
             );
             if ($workingTree->hasRepository($repositoryFullName)) {
                 $repository = $workingTree->getRepository($repositoryFullName);
             } else {
-                $repository = new Repository($repositoryName, $configuration['namespace'], $configuration['registry']);
-                foreach ($configuration['aliases'] as $alias => $reference) {
+                $repository = new Repository(
+                    $repositoryName,
+                    $configuration[self::NAMESPACE_KEY],
+                    $configuration[self::REGISTRY_KEY]
+                );
+                foreach ($configuration[self::ALIASES_KEY] as $alias => $reference) {
                     $repository->addTag(new Alias($alias, $reference));
                 }
                 $workingTree->addRepository($repository);
@@ -106,9 +114,9 @@ class Builder {
 
     public function parseConfigFile(string $repositoryDirectory): array {
         $configuration = [
-            'registry' => '',
-            'namespace' => 'library',
-            'aliases' => []
+            self::REGISTRY_KEY => '',
+            self::NAMESPACE_KEY => 'library',
+            self::ALIASES_KEY => []
         ];
         $configFile = null;
         if (is_file($repositoryDirectory . '/repository.yaml')) {

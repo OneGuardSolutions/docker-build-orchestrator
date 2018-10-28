@@ -40,7 +40,7 @@ abstract class SimpleVisitor implements VisitorInterface {
         $this->afterRepository($repository);
     }
 
-    public abstract function visitTag(Tag $tag);
+    abstract public function visitTag(Tag $tag);
 
     protected function beforeWorkingTree(WorkingTree $workingTree) {
     }

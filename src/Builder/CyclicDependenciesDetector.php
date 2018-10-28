@@ -37,7 +37,12 @@ class CyclicDependenciesDetector {
         return $cycles;
     }
 
-    private function detectCyclicDependency(WorkingTree $workingTree, array &$tags, array &$visited, array &$stack, array &$cycles) {
+    private function detectCyclicDependency(
+        WorkingTree $workingTree,
+        array &$tags, array &$visited,
+        array &$stack,
+        array &$cycles
+    ) {
         $current = array_shift($tags);
         if ($current === '-') {
             array_shift($stack);

@@ -24,6 +24,11 @@ class RepositoryUtils {
         ) {
             return self::registryComparator($registry1, $registry2);
         }
+
+        return self::nameWithoutRegistryComparator($parts1, $parts2);
+    }
+
+    private static function nameWithoutRegistryComparator(array $parts1, array $parts2) {
         if (count($parts1) === 2 && ($ns1 = array_shift($parts1)) !== ($ns2 = array_shift($parts2))) {
             return $ns1 < $ns2 ? -1 : 1;
         }
