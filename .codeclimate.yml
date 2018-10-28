@@ -15,14 +15,15 @@ plugins:
         enabled: false
       Squiz Functions MultiLineFunctionDeclaration BraceOnSameLine:
         enabled: false
-      CleanCode/ElseExpression:
-        enabled: false
-      CleanCode/StaticAccess:
-        enabled: false
       PSR2 ControlStructures ControlStructureSpacing SpacingAfterOpenBrace:
         enabled: false
   phpmd:
     enabled: true
+    checks:
+      CleanCode/ElseExpression:
+        enabled: false
+      CleanCode/StaticAccess:
+        enabled: false
   sonar-php:
     enabled: true
     config:
