@@ -81,16 +81,19 @@ class CheckCommandTest extends TestCase {
             'Checks health status of detected repositories repositories and images',
             $command->getDescription()
         );
-        $this->assertTrue($command->getDefinition()->hasOption('directory'));
+        $this->assertTrue($command->getDefinition()->hasArgument('directory'));
     }
 
     /**
      * @covers ::execute
+     * @covers ::buildAndVerifyWorkingTree
+     * @covers ::beforeValidate
+     * @covers ::validate
      */
     public function testExecute() {
         $command = new CheckCommand();
         $commandTester = new CommandTester($command);
-        $commandTester->execute(['--directory' => [__DIR__ . '/../_resources/docker/repositories-1']]);
+        $commandTester->execute(['directory' => [__DIR__ . '/../_resources/docker/repositories-1']]);
         $output = $commandTester->getDisplay();
 
         $this->assertEquals(self::MSG, $this->relativePaths($output));
@@ -98,44 +101,54 @@ class CheckCommandTest extends TestCase {
     }
 
     /**
+     * @expectedException \Symfony\Component\Console\Exception\RuntimeException
+     * @expectedExceptionMessage Not enough arguments (missing: "directory").
      * @covers ::execute
      */
-    public function testExecuteCwdWithNoRepositories() {
+    public function testExecuteNoDirectory() {
         $command = new CheckCommand();
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
-
-        $this->assertEquals(
-            "No root directories specified, adding current working directory.\nNo Docker images were found.\n",
-            $commandTester->getDisplay()
-        );
-        $this->assertEquals(0, $commandTester->getStatusCode());
     }
 
     /**
      * @covers ::execute
+     * @covers ::buildAndVerifyWorkingTree
+     */
+    public function testExecuteNoRepositories() {
+        $command = new CheckCommand();
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(['directory' => [__DIR__ . '/../']]);
+
+        $this->assertEquals("No Docker images were found.\n", $this->relativePaths($commandTester->getDisplay()));
+    }
+
+    /**
+     * @covers ::execute
+     * @covers ::validate
      * @covers ::checkForBrokenAliases
      */
     public function testExecuteBrokenAliases() {
         $command = new CheckCommand();
         $commandTester = new CommandTester($command);
-        $commandTester->execute(['--directory' => [__DIR__ . '/../_resources/docker/repositories-2']]);
+        $commandTester->execute(['directory' => [__DIR__ . '/../_resources/docker/repositories-2']]);
 
         $this->assertEquals(self::MSG_ALIASES_ERROR, $this->relativePaths($commandTester->getDisplay()));
-        $this->assertEquals(1, $commandTester->getStatusCode());
+        $this->assertEquals(2, $commandTester->getStatusCode());
     }
 
     /**
      * @covers ::execute
+     * @covers ::validate
      * @covers ::checkForCyclicDependencies
      */
     public function testExecuteCyclicDependencies() {
         $command = new CheckCommand();
         $commandTester = new CommandTester($command);
-        $commandTester->execute(['--directory' => [__DIR__ . '/../_resources/docker/repositories-4']]);
+        $commandTester->execute(['directory' => [__DIR__ . '/../_resources/docker/repositories-4']]);
 
         $this->assertEquals(self::MSG_CYCLIC_ERROR, $this->relativePaths($commandTester->getDisplay()));
-        $this->assertEquals(2, $commandTester->getStatusCode());
+        $this->assertEquals(3, $commandTester->getStatusCode());
     }
 
     private function relativePaths(string $content) {
