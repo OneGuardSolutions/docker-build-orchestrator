@@ -11,6 +11,7 @@
 namespace OneGuard\DockerBuildOrchestrator;
 
 use Deployer\Component\PharUpdate\Console\Command as UpdateCommand;
+use OneGuard\DockerBuildOrchestrator\Command\BuildCommand;
 use OneGuard\DockerBuildOrchestrator\Command\CheckCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\HelpCommand;
@@ -42,6 +43,7 @@ class ApplicationTest extends TestCase {
 
     private static function knownCommands(): array {
         return [
+            'build' => BuildCommand::class,
             'check' => CheckCommand::class,
             'help' => HelpCommand::class,
             'list' => ListCommand::class,
