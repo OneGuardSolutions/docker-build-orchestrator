@@ -13,51 +13,35 @@ namespace OneGuard\DockerBuildOrchestrator\Builder;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\NamedImage;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\Tag;
 use OneGuard\DockerBuildOrchestrator\Builder\WorkingTree\WorkingTree;
+use OneGuard\DockerBuildOrchestrator\Utils\RepositoryUtils;
 
-class CyclicDependenciesDetector {
+class BuildOrderProcessor {
     /**
-     * Returns an array of detected cyclic dependencies, if any.
-     *
-     * A cyclic dependency is represented as a string array containing the chain of tag names.
-     *
      * @param WorkingTree $workingTree
-     * @return string[][]
+     * @return string[]
      */
-    public function detect(WorkingTree $workingTree): array {
-        $cycles = [];
-
+    public function determineOrder(WorkingTree $workingTree): array {
         $tags = $this->getTags($workingTree);
-        $visited = [];
+        $order = [];
         $stack = [];
 
         while (!empty($tags)) {
-            $this->detectCyclicDependency($workingTree, $tags, $visited, $stack, $cycles);
+            $this->addDependencies($workingTree, $tags, $order, $stack);
         }
 
-        return $cycles;
+        return $order;
     }
 
-    private function detectCyclicDependency(
-        WorkingTree $workingTree,
-        array &$tags,
-        array &$visited,
-        array &$stack,
-        array &$cycles
-    ) {
+    private function addDependencies(WorkingTree $workingTree, array &$tags, array &$order, array &$stack) {
         $current = array_shift($tags);
         if ($current === '-') {
-            array_shift($stack);
+            $order[] = array_shift($stack);
             return;
         }
 
-        if (in_array($current, $stack)) {
-            $cycles[] = $this->constructCycleFrom($stack, $current);
+        if (in_array($current, $order)) {
             return;
         }
-        if (in_array($current, $visited)) {
-            return;
-        }
-        $visited[] = $current;
 
         $dependencies = $this->getRelevantDependencies($workingTree, $current);
         if (!empty($dependencies)) {
@@ -66,20 +50,29 @@ class CyclicDependenciesDetector {
             foreach ($dependencies as $dependency) {
                 array_unshift($tags, $dependency);
             }
+        } else {
+            $order[] = $current;
         }
     }
 
+    /**
+     * @param WorkingTree $workingTree
+     * @return string[]
+     */
     private function getTags(WorkingTree $workingTree): array {
         $tags = array_filter($workingTree->getAllTags(), function (Tag $tag) {
             return $tag instanceof NamedImage;
         });
 
-        return array_map(
+        $tags = array_map(
             function (Tag $tag) {
                 return $tag->getFullName();
             },
             $tags
         );
+        usort($tags, [RepositoryUtils::class, 'tagNameComparator']);
+
+        return $tags;
     }
 
     /**
@@ -104,14 +97,5 @@ class CyclicDependenciesDetector {
         }
 
         return $result;
-    }
-
-    /**
-     * @param array $stack
-     * @param string $tag
-     * @return string[]
-     */
-    private function constructCycleFrom(array $stack, string $tag): array {
-        return array_slice($stack, array_search($tag, $stack) ?: 0);
     }
 }

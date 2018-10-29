@@ -11,6 +11,28 @@
 namespace OneGuard\DockerBuildOrchestrator\Utils;
 
 class RepositoryUtils {
+    public static function tagNameComparator($fullTagName1, $fullTagName2): int {
+        $index = strrpos($fullTagName1, ':');
+        if ($index === false || $index === 0) {
+            throw new \InvalidArgumentException("Invalid tag name: '$fullTagName1'");
+        }
+        $repository1 = substr($fullTagName1, 0, $index);
+        $tag1 = substr($fullTagName1, $index + 1);
+
+        $index = strrpos($fullTagName2, ':');
+        if ($index === false || $index === 0) {
+            throw new \InvalidArgumentException("Invalid tag name: '$fullTagName2'");
+        }
+        $repository2 = substr($fullTagName2, 0, $index);
+        $tag2 = substr($fullTagName2, $index + 1);
+
+        if ($repository1 !== $repository2) {
+            return self::fullNameComparator($repository1, $repository2);
+        }
+
+        return $tag1 === $tag2 ? 0 : ($tag1 < $tag2 ? -1 : 1);
+    }
+
     public static function fullNameComparator(string $name1, string $name2): int {
         $parts1 = explode('/', $name1, 3);
         $parts2 = explode('/', $name2, 3);

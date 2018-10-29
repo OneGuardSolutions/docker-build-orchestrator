@@ -17,6 +17,36 @@ use PHPUnit\Framework\TestCase;
  */
 class RepositoryUtilsTest extends TestCase {
     /**
+     * @param string $tag1
+     * @param string $tag2
+     * @param int $result
+     *
+     * @dataProvider tagNameProducer
+     * @covers ::tagNameComparator
+     */
+    public function testTagNameComparator(string $tag1, string $tag2, int $result) {
+        $this->assertEquals($result, RepositoryUtils::tagNameComparator($tag1, $tag2));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid tag name: 'invalid'
+     * @covers ::tagNameComparator
+     */
+    public function testTagNameComparatorInvalidTag() {
+        RepositoryUtils::tagNameComparator('invalid', 'a:1');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid tag name: 'invalid'
+     * @covers ::tagNameComparator
+     */
+    public function testTagNameComparatorInvalidTag2() {
+        RepositoryUtils::tagNameComparator('a:1', 'invalid');
+    }
+
+    /**
      * @param string $name1
      * @param string $name2
      * @param int $result
@@ -61,6 +91,28 @@ class RepositoryUtilsTest extends TestCase {
             'test.docker.io/tester/test',
             RepositoryUtils::generateFullName('test', 'tester', 'test.docker.io')
         );
+    }
+
+    public static function tagNameProducer() {
+        return [
+            ['a:1', 'a:1', 0],
+            ['a:1', 'a:2', -1],
+            ['a:2', 'a:1', 1],
+
+            ['test/a:1', 'test/a:1', 0],
+            ['test/a:1', 'test/a:2', -1],
+            ['test/a:2', 'test/a:1', 1],
+            ['test/a:2', 'test/b:1', -1],
+            ['test/b:1', 'test/a:2', 1],
+
+            ['docker.test.io/test/a:1', 'docker.test.io/test/a:1', 0],
+            ['docker1.test.io/test/a:1', 'docker2.test.io/test/a:1', -1],
+            ['docker2.test.io/test/a:1', 'docker1.test.io/test/a:1', 1],
+
+            ['docker.test.io:80/test/a:1', 'docker.test.io:80/test/a:1', 0],
+            ['docker.test.io:80/test/a:1', 'docker.test.io:81/test/a:1', -1],
+            ['docker.test.io:81/test/a:1', 'docker.test.io:80/test/a:1', 1]
+        ];
     }
 
     public static function fullNameProducer() {
